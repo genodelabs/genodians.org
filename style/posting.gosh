@@ -1,0 +1,63 @@
+#
+# Obtain meta information from command line
+#
+regexp {\--link ([^ ]+)} $argv dummy link
+
+# --author or --flair may contain whitespace, access it as argv list element
+set author [lindex $argv [expr [lsearch $argv --author] + 1]]
+set flair  [lindex $argv [expr [lsearch $argv --flair]  + 1]]
+
+proc file_content { path } {
+	set fh [open $path "RDONLY"]
+	set content [read $fh]
+	close $fh
+	return $content
+}
+
+proc produce_head_html {} {
+
+	global title link author flair
+
+	# obtain date from link name, convert to nice looking format
+	regexp {/(\d\d\d\d-\d\d-\d\d)} $link dummy date
+
+	# obtain username from link
+	regexp {(.*)/} $link dummy username
+
+	printline [file_content style/subdir/header]
+	printline [file_content style/subdir/title]
+
+	printline {<div class="content">}
+	printline [file_content html/$username/author]
+	printline [file_content style/external-links-menu]
+	printline "<div class=\"posting\">"
+	printline "<div class=\"post-icon\">"
+	printline " <a href=\"$username/index\">"
+	printline "  <img class=\"small-author\" src=\"author.png\"/>"
+	printline " </a>"
+	printline "</div>"
+	printline "<h2 class=\"posting-title\">[out_html $title]</h2>"
+	printline "<span class=\"post-meta\">[nice_date $date] by"
+	printline " <a href=\"author\">$author</a></span><br/>"
+	printline "<div class=\"visual-clear\"></div>"
+}
+
+proc produce_tail_html {} {
+	global link
+	global title
+
+	set reddit_url "reddit.com/r/genode"
+
+	regsub -all { } $title {%20} title
+
+	printline {<div class="discuss">}
+	printline "<a href=\"https://www.$reddit_url/submit?url=https://genodians.org/$link&title=$title\">"
+	printline "Discuss at $reddit_url"
+	printline {</a>}
+	printline {</div>}
+	printline {        </div>}
+	printline {      </div>}
+	printline {  </body>}
+	printline {</html>}
+}
+

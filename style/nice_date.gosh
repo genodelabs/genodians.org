@@ -1,0 +1,26 @@
+
+proc nice_date { date } {
+
+	#
+	# We emulate the following command to avoid the dependency from 'clock'
+	#
+	# set nice_date [clock format [clock scan $date] -format "%B %d %Y"]
+	#
+
+	set year  ""
+	set month ""
+	set day   ""
+
+	regexp {(\d\d\d\d)-(\d\d)-(\d\d)} $date dummy year month day
+	regsub {^0} $month "" month
+	regsub {^0} $day   "" day
+
+	if {$month < 1 || $month > 12} { return "$date"; }
+
+	incr month -1
+
+	set months { January Februar March April May June July August September
+	             October November December }
+
+	return "[lindex $months $month] $day $year"
+}

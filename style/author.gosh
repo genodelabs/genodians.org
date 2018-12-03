@@ -1,0 +1,24 @@
+
+# --author and --flair may contain whitespace, access it as argv list element
+set author [lindex $argv [expr [lsearch $argv --author] + 1]]
+set flair  [lindex $argv [expr [lsearch $argv --flair]  + 1]]
+
+set top_path ""
+regexp {\--top-path ([^ ]+)} $argv dummy top_path
+
+proc produce_head_html {} {
+
+	global flair author top_path
+
+	printline {<div class="author-info menu">}
+	printline "  <div class=\"author-title\">"
+	printline "    <a href=\"index\"><img src=\"author.png\"/>$author</a><br/>"
+	printline "    <span class=\"flair\">$flair</span></div>"
+	printline {  <div class="visual-clear"></div>}
+	printline {  <div class="about-author">}
+}
+
+proc produce_tail_html {} {
+	printline {</div></div>}
+}
+

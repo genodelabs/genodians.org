@@ -1,0 +1,121 @@
+body {
+font: 100% "Lucida Grande", Verdana, Lucida, Helvetica, Arial, sans-serif;
+background-image: linear-gradient(to bottom, #334, #445, #334);
+color: #333335;
+margin-bottom: 50px;
+padding: 0;
+}
+
+.content {
+position: relative;
+background-color: #eee;
+max-width: 900px;
+margin-left:  auto;
+margin-right: auto;
+box-shadow: 0px 10px 18px #112;
+}
+
+div.menu ul, .post-list {
+list-style-type: none;
+}
+
+.post-list, .posting {
+padding-left: 0px;
+margin-left: 50px; margin-right: 50px;
+margin-top: 20px;
+padding-top: 10px; padding-bottom: 10px;
+}
+
+.post-list li { padding-top: 0px; padding-bottom: 6px; margin-top: 10px; }
+
+.post-meta           { color: #88888a; }
+.post-meta a:link    { color: #777; }
+.post-meta a:visited { color: #777; }
+.post-meta a:hover   { color: #333; }
+
+.post-icon { clear: both; float: left; margin-top: 5px; margin-right: 5px; }
+
+.captionedimage { margin: auto; }
+
+.title {
+position: relative;
+margin-left: auto;
+margin-right: auto;
+color: #ccc;
+text-align: center;
+}
+
+
+h2 {
+margin-top: 2px;
+margin-bottom: 0px;
+font: 135% "Lucida Grande", Verdana, Lucida, Helvetica, Arial, sans-serif;
+color: #000;
+}
+
+img.small-author { width: 35px; height: 35px; }
+
+.authors img { width: 35px; height: 35px; margin-right: 10px; float: left;}
+.authors li { clear: both; padding-top: 10px; }
+
+.author-info img { width: 55px; height: 55px; margin-right: 10px; float: left;}
+
+.author-title { margin: 10px; }
+
+.author-info p { margin-bottom: 10px; }
+
+p,summary { margin: 0px; }
+
+.posting p { margin-top: 12px; margin-bottom: 12px; line-height: 125%; }
+
+a { text-decoration: none; }
+
+a:link    { color: #00a; }
+a:visited { color: #44c; }
+a:hover   { color: #66f; }
+
+.flair { font-size: 80%; color: #777; }
+
+.about-author { font-size: 80%; margin: 10px; }
+
+.visual-clear {
+display: block;
+clear: both;
+margin: 4px;
+}
+
+.external-links, .authors, .author-info {
+position: absolute;
+width: 250px;
+color: #aaa;
+}
+
+.external-links {
+right: -280px;
+}
+
+.authors, .author-info {
+left: -280px;
+}
+
+div.menu { background-image: linear-gradient(to bottom right, #556, #334); }
+
+div.menu-title { margin: 10px; color: #bbb; font-weight: bold; }
+div.menu ul { margin: 10px; padding: 0; }
+div.menu li { margin-top: 10px; }
+div.menu a { color: #aaa; }
+div.menu a:hover { color: #ddd; }
+
+.bottom-notice a       { color: #aaa; }
+.bottom-notice a:hover { color: #ddd; }
+
+.bottom-notice {
+margin-top: 30px;
+text-align: center;
+color: #888;
+}
+
+.bottom-notice a       { color: #aaa; }
+.bottom-notice a:hover { color: #ddd; }
+
+.discuss { margin-top: 30px; margin-bottom: 10px; }
