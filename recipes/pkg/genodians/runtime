@@ -1,0 +1,44 @@
+<runtime ram="256M" caps="3000" binary="init" config="genodians.config">
+
+	<requires> <nic/> <timer/> </requires>
+
+	<content>
+		<rom label="ld.lib.so"/>
+		<rom label="bash-minimal.tar"/>
+		<rom label="coreutils-minimal.tar"/>
+		<rom label="curl.lib.so"/>
+		<rom label="dummy"/>
+		<rom label="example.pem"/>
+		<rom label="extract"/>
+		<rom label="extract.config"/>
+		<rom label="fetchurl"/>
+		<rom label="fetchurl.config"/>
+		<rom label="genodians.config"/>
+		<rom label="genodians.tar"/>
+		<rom label="import.config"/>
+		<rom label="init"/>
+		<rom label="libarchive.lib.so"/>
+		<rom label="libc.lib.so"/>
+		<rom label="libc_noux.lib.so"/>
+		<rom label="libcrypto.lib.so"/>
+		<rom label="liblzma.lib.so"/>
+		<rom label="libm.lib.so"/>
+		<rom label="libssh.lib.so"/>
+		<rom label="libssl.lib.so"/>
+		<rom label="lighttpd"/>
+		<rom label="lighttpd.conf"/>
+		<rom label="lxip.lib.so"/>
+		<rom label="make.tar"/>
+		<rom label="nic_router"/>
+		<rom label="nic_router.config"/>
+		<rom label="noux"/>
+		<rom label="posix.lib.so"/>
+		<rom label="sequence"/>
+		<rom label="tclsh.tar"/>
+		<rom label="vfs"/>
+		<rom label="vfs.lib.so"/>
+		<rom label="vfs_lxip.lib.so"/>
+		<rom label="zlib.lib.so"/>
+	</content>
+
+</runtime>

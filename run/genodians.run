@@ -1,0 +1,90 @@
+create_boot_directory
+
+proc depot_user {} { return [get_cmd_arg --depot-user genodelabs] }
+
+import_from_depot [depot_user]/src/[base_src] \
+                  [depot_user]/pkg/[drivers_nic_pkg] \
+                  [depot_user]/pkg/genodians
+
+install_config {
+
+<config prio_levels="2">
+
+	<parent-provides>
+		<service name="ROM"/>
+		<service name="IRQ"/>
+		<service name="IO_MEM"/>
+		<service name="IO_PORT"/>
+		<service name="PD"/>
+		<service name="RM"/>
+		<service name="CPU"/>
+		<service name="LOG"/>
+	</parent-provides>
+
+	<default-route>
+		<any-service> <parent/> <any-child/> </any-service>
+	</default-route>
+
+	<default caps="100"/>
+
+	<start name="timer">
+		<resource name="RAM" quantum="1M"/>
+		<provides> <service name="Timer"/> </provides>
+		<config/>
+	</start>
+
+	<start name="drivers" caps="1000">
+		<resource name="RAM" quantum="32M" constrain_phys="yes"/>
+		<binary name="init"/>
+		<provides> <service name="Nic"/> </provides>
+		<route>
+			<service name="ROM" label="config"> <parent label="drivers.config"/> </service>
+			<service name="IO_MEM">  <parent/> </service>
+			<service name="IO_PORT"> <parent/> </service>
+			<service name="IRQ">     <parent/> </service>
+			<service name="LOG">     <parent/> </service>
+			<service name="PD">      <parent/> </service>
+			<service name="RM">      <parent/> </service>
+			<service name="CPU">     <parent/> </service>
+			<service name="ROM">     <parent/> </service>
+			<service name="Timer">   <child name="timer"/> </service>
+		</route>
+	</start>
+
+	<start name="genodians" caps="3000" priority="-1">
+		<resource name="RAM" quantum="256M"/>
+		<binary name="init"/>
+		<route>
+			<service name="ROM" label="config"> <parent label="genodians.config"/> </service>
+			<service name="LOG">   <parent/> </service>
+			<service name="PD">    <parent/> </service>
+			<service name="RM">    <parent/> </service>
+			<service name="CPU">   <parent/> </service>
+			<service name="ROM">   <parent/> </service>
+			<service name="Timer"> <child name="timer"/> </service>
+			<service name="Nic">   <child name="drivers"/> </service>
+		</route>
+	</start>
+
+</config>}
+
+
+if {![file exists bin/example.pem]} {
+	puts "Certificate 'example.pem' missing. Please execute"
+	puts ""
+	puts " openssl req -new -x509 -keyout bin/example.pem -out bin/example.pem -days 365 -nodes"
+	puts ""
+	puts "and copy the resulting file to bin or provide your own examplary file."
+	puts ""
+	exit 0
+}
+
+build_boot_image { example.pem }
+
+append_if [have_spec x86]     qemu_args " -net nic,model=e1000 "
+append_if [have_spec lan9118] qemu_args " -net nic,model=lan9118 "
+
+append qemu_args " -net user -redir tcp:5555::80 -redir tcp:5556::443 "
+append qemu_args " -nographic -serial mon:stdio "
+
+run_genode_until forever
