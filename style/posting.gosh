@@ -24,16 +24,16 @@ proc produce_head_html {} {
 	# obtain username from link
 	regexp {(.*)/} $link dummy username
 
-	printline [file_content style/subdir/header]
+	printline [file_content style/subdir/header-top]
+	printline "<title>$title</title>"
+	printline [file_content style/subdir/header-bottom]
+	printline {<div id="content">}
 	printline [file_content style/subdir/title]
-
-	printline {<div class="content">}
-	printline [file_content html/$username/author]
-	printline [file_content style/external-links-menu]
-	printline "<div class=\"posting\">"
+	printline {<div id="middle">}
+	printline "<div id=\"posting\">"
 	printline "<div class=\"post-icon\">"
 	printline " <a href=\"$username/index\">"
-	printline "  <img class=\"small-author\" src=\"author.png\"/>"
+	printline "  <img class=\"small-author\" src=\"author.png\" alt=\"$author avatar\"/>"
 	printline " </a>"
 	printline "</div>"
 	printline "<h2 class=\"posting-title\">[out_html $title]</h2>"
@@ -50,14 +50,22 @@ proc produce_tail_html {} {
 
 	regsub -all { } $title {%20} title
 
+	# obtain username from link
+	regexp {(.*)/} $link dummy username
+
 	printline {<div class="discuss">}
 	printline "<a href=\"https://www.$reddit_url/submit?url=https://genodians.org/$link&title=$title\">"
 	printline "Discuss at $reddit_url"
 	printline {</a>}
 	printline {</div>}
+	printline {       </div>}
 	printline {        </div>}
-	printline {      </div>}
-	printline {  </body>}
-	printline {</html>}
+	printline {<div id="left">}
+	printline [file_content html/$username/author]
+	printline {</div>}
+	printline {<div id="right">}
+	printline [file_content style/external-links-menu]
+	printline {</div>}
+	printline [file_content style/footer]
 }
 

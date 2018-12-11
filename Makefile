@@ -88,22 +88,33 @@ html/index: $(addprefix content/,$(addsuffix .txt,$(RECENT_POSTINGS)))
 html/index:
 	$(MSG)
 	cat style/front-header > $@
+	echo "<div id=\"content\">" >> $@
 	cat style/front-title >> $@
-	echo "<div class=\"authors menu\">" \
-	     " <div class=\"menu-title\">Authors</div>" \
-	     " <ul>" >> $@
-	$(foreach A,$(RECENT_AUTHORS), \
-	  echo "  <li><a href=\"$A/index\">" \
-	       "   <img src=\"$A/author.png\"/>${AUTHOR_NAME($A)}<br/>" \
-	       "   <span class=\"flair\">${AUTHOR_FLAIR($A)}</span></a></li>" >> $@;)
-	echo " </ul>" \
-	     "</div>" >> $@
-	cat style/external-links-menu >> $@
-	echo "<ul class=\"post-list\">" >> $@
+	echo "<div id=\"middle\">" >> $@
+	echo "<div id=\"post-list\">" >> $@
+	echo "<ul>" >> $@
 	$(foreach P,$(RECENT_POSTINGS), \
 	  $(GOSH) --style style/nice_date.gosh --style style/summary.gosh \
 	          $(call gosh_metadata_args,$P) content/$P.txt >> $@;)
 	echo "</ul>" >> $@
+	echo "</div> <!-- post-list -->" >> $@
+	echo "</div> <!-- middle -->" >> $@
+	echo "<div id=\"left\">" >> $@
+	echo "<div class=\"authors menu\">" \
+	     " <div class=\"menu-inner-left\">" \
+	     "  <div class=\"menu-title\">Authors</div>" \
+	     "  <ul>" >> $@
+	$(foreach A,$(RECENT_AUTHORS), \
+	  echo "  <li><a href=\"$A/index\">" \
+	       "   <img src=\"$A/author.png\" alt=\"${AUTHOR_NAME($A)} avatar\"/>${AUTHOR_NAME($A)}<br/>" \
+	       "   <span class=\"flair\">${AUTHOR_FLAIR($A)}</span></a></li>" >> $@;)
+	echo "  </ul>" \
+	     " </div>" \
+	     "</div>" \
+	     "</div> <!-- left -->" >> $@
+	echo "<div id=\"right\">" >> $@
+	cat style/external-links-menu >> $@
+	echo "</div> <!-- right -->" >> $@
 	cat style/footer >> $@
 
 #
@@ -124,16 +135,26 @@ $(foreach A,$(AUTHORS),$(eval html/$A/index : html/$A/author))
 #
 html/%/index:
 	$(MSG)
-	cat style/subdir/header > $@
+	cat style/subdir/header-top > $@
+	echo "<title>Genodians.org: posts of $(shell cat authors/$*/name)</title>" >> $@
+	cat style/subdir/header-bottom >> $@
+	echo "<div id=\"content\">" >> $@
 	cat style/subdir/title >> $@
-	echo "<div class=\"content\">" >> $@
-	cat html/$*/author >> $@
-	cat style/external-links-menu >> $@
-	echo "<ul class=\"post-list\">" >> $@
+	echo "<div id=\"middle\">" >> $@
+	echo "<div id=\"post-list\">" >> $@
+	echo "<ul>" >> $@
 	$(foreach P,${POSTINGS($*)}, \
 	  $(GOSH) --style style/nice_date.gosh --style style/summary.gosh --top-path "../" \
 	          $(call gosh_metadata_args,$*/$P) content/$*/$P.txt >> $@;)
 	echo "</ul>" >> $@
+	echo "</div> <!-- post-list -->" >> $@
+	echo "</div> <!-- middle -->" >> $@
+	echo "<div id=\"left\">" >> $@
+	cat html/$*/author >> $@
+	echo "</div> <!-- left -->" >> $@
+	echo "<div id=\"right\">" >> $@
+	cat style/external-links-menu >> $@
+	echo "</div> <!-- right -->" >> $@
 	cat style/footer >> $@
 
 html/%.css: style/%.css

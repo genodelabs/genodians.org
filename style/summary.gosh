@@ -28,8 +28,8 @@ proc process_plain_html {plaintxtblock} {
 	regexp {(.*)/} $link dummy username
 
 	printline "<div class=\"post-icon\">"
-	printline " <a href=\"$username/author\">"
-	printline "  <img class=\"small-author\" src=\"${top_path}$username/author.png\"/>"
+	printline " <a href=\"$username/index\">"
+	printline "  <img class=\"small-author\" src=\"${top_path}$username/author.png\" alt=\"$author avatar\"/>"
 	printline " </a>"
 	printline "</div>"
 	printline "<h2 class=\"posting-title\"><a href=\"${top_path}$link\">[out_html $title]</a></h2>"
@@ -37,11 +37,11 @@ proc process_plain_html {plaintxtblock} {
 	printline " <a href=\"$username/index\">$author</a></span><br/>"
 	printline "<div class=\"visual-clear\"></div>"
 
-	printline {<span><p class="summary">}
+	printline {<p class="summary">}
 	foreach txtline $plaintxtblock {
 		printline "[out_html [linetxt $txtline]]" }
 	printline "<a href=\"${top_path}$link\"> Continue...</a>"
-	printline {</p></span>}
+	printline {</p>}
 	printline {</li>}
 
 	exit

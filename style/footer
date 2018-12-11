@@ -1,6 +1,6 @@
-    </div> <!-- content -->
     <div class="bottom-notice">
       operated by <a href="https://www.genode-labs.com">Genode Labs</a>
     </div>
+   </div> <!-- content -->
   </body>
 </html>

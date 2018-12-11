@@ -1,10 +1,12 @@
 <div class="external-links menu">
-  <div class="menu-title">External Links</div>
-  <ul>
-    <li><a href="https://genode.org">Genode OS project</a></li>
-    <li><a href="https://github.com/genodelabs/genode">Genode at GitHub</a></li>
-    <li><a href="https://github.com/genodelabs/genodians.org">Join genodians.org</a></li>
-    <li><a href="https://genode.org/community/mailing-lists">Mailing list</a></li>
-    <li><a href="https://webchat.freenode.net/?randomnick=1&channels=%23genode&uio=d4">IRC</a></li>
-  </ul>
+  <div class="menu-inner-right">
+    <div class="menu-title">External Links</div>
+    <ul>
+      <li><a href="https://genode.org">Genode OS project</a></li>
+      <li><a href="https://github.com/genodelabs/genode">Genode at GitHub</a></li>
+      <li><a href="https://github.com/genodelabs/genodians.org">Join genodians.org</a></li>
+      <li><a href="https://genode.org/community/mailing-lists">Mailing list</a></li>
+      <li><a href="https://webchat.freenode.net/?randomnick=1&channels=%23genode&uio=d4">IRC</a></li>
+    </ul>
+   </div>
 </div>
