@@ -40,7 +40,7 @@ proc process_plain_html {plaintxtblock} {
 	printline {<span><p class="summary">}
 	foreach txtline $plaintxtblock {
 		printline "[out_html [linetxt $txtline]]" }
-	printline "<a href=\"$link\"> Continue...</a>"
+	printline "<a href=\"${top_path}$link\"> Continue...</a>"
 	printline {</p></span>}
 	printline {</li>}
 
