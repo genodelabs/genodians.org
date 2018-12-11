@@ -38,7 +38,7 @@ proc produce_head_html {} {
 	printline "</div>"
 	printline "<h2 class=\"posting-title\">[out_html $title]</h2>"
 	printline "<span class=\"post-meta\">[nice_date $date] by"
-	printline " <a href=\"author\">$author</a></span><br/>"
+	printline " <a href=\"index\">$author</a></span><br/>"
 	printline "<div class=\"visual-clear\"></div>"
 }
 
