@@ -76,7 +76,7 @@ gosh_metadata_args = --link $1 \
 
 html/%: content/%.txt
 	$(MSG)
-	$(GOSH) --style style/nice_date --style style/posting.gosh \
+	$(GOSH) --style style/nice_date --style style/posting.gosh --top-path "../" \
 	        $(call gosh_metadata_args,$*) $< > $@
 
 # front page depends on the most recent postings

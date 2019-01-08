@@ -1,3 +1,6 @@
+set top_path ""
+regexp {\--top-path ([^ ]+)} $argv dummy top_path
+
 #
 # Obtain meta information from command line
 #
@@ -16,7 +19,7 @@ proc file_content { path } {
 
 proc produce_head_html {} {
 
-	global title link author flair
+	global title link author flair top_path
 
 	# obtain date from link name, convert to nice looking format
 	regexp {/(\d\d\d\d-\d\d-\d\d)} $link dummy date
@@ -32,7 +35,7 @@ proc produce_head_html {} {
 	printline {<div id="middle">}
 	printline "<div id=\"posting\">"
 	printline "<div class=\"post-icon\">"
-	printline " <a href=\"$username/index\">"
+	printline " <a href=\"${top_path}$username/index\">"
 	printline "  <img class=\"small-author\" src=\"author.png\" alt=\"$author avatar\"/>"
 	printline " </a>"
 	printline "</div>"
