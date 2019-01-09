@@ -1,0 +1,47 @@
+
+proc produce_head_html {} { }
+
+#
+# Obtain meta information from command line
+#
+regexp {\--link ([^ ]+)} $argv dummy link
+
+set top_path ""
+regexp {\--top-path ([^ ]+)} $argv dummy top_path
+
+# --author may contain whitespace, access it as argv list element
+set author [lindex $argv [expr [lsearch $argv --author] + 1]]
+
+#
+# Called on the first paragraph found in the posting
+#
+proc process_plain_html {plaintxtblock} {
+
+	global title link author top_path depth
+
+	printline "<item>"
+
+	# obtain date from link name, convert to nice looking format
+	regexp {/(\d\d\d\d-\d\d-\d\d)} $link dummy date
+
+	# obtain username from link
+	regexp {(.*)/} $link dummy username
+
+	printline " <title>[out_html $title]</title>"
+	printline " <link>https://genodians.org/$link</link>"
+	printline " <pubDate>[nice_date $date]</pubDate>"
+	printline " <description>"
+
+	incr depth 2
+
+	foreach txtline $plaintxtblock {
+		printline "[out_html [linetxt $txtline]]" }
+
+	incr depth -2
+
+	printline " </description>"
+	printline "</item>"
+
+	exit
+}
+

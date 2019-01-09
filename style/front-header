@@ -4,6 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="base.css"/>
     <link rel="shortcut icon" type="image/x-icon" href="./icon.ico"/>
-    <title>Genodians.org a community site for the Genode OS Framework and associated projects</title>
+    <link rel="alternate" type="application/rss+xml" href="./rss" title="RSS feed" />
+    <title>Genodians.org - Stories around the Genode Operating System</title>
   </head>
   <body>

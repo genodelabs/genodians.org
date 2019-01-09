@@ -56,6 +56,7 @@ POSTINGS_HTML := $(foreach A,$(AUTHORS),$(addprefix html/$A/,$(POSTINGS($A))))
 # files to generate
 GENERATED_FILES := $(POSTINGS_HTML) \
                    html/index html/base.css html/icon.ico \
+                   html/rss html/RSS \
                    $(foreach A,$(AUTHORS),html/$A/author.png) \
                    $(foreach A,$(AUTHORS),html/$A/index) \
                    $(foreach A,$(AUTHORS),html/$A/author) \
@@ -116,6 +117,17 @@ html/index:
 	cat style/external-links-menu >> $@
 	echo "</div> <!-- right -->" >> $@
 	cat style/footer >> $@
+
+html/rss:
+	$(MSG)
+	cat style/rss-header > $@
+	$(foreach P,$(RECENT_POSTINGS), \
+	  $(GOSH) --style style/nice_date.gosh --style style/rss_item.gosh \
+	          $(call gosh_metadata_args,$P) content/$P.txt >> $@;)
+	cat style/rss-footer >> $@
+
+html/RSS: html/rss
+	cp $< $@
 
 #
 # <author>/author information snippet presented to the left of the
