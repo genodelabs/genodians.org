@@ -13,16 +13,16 @@ AUTHORS := $(notdir $(wildcard content/*))
 $(foreach A,$(AUTHORS),$(eval AUTHOR_NAME($A)  += $(shell cat authors/$A/name)))
 $(foreach A,$(AUTHORS),$(eval AUTHOR_FLAIR($A) += $(shell cat authors/$A/flair)))
 
+# https://stackoverflow.com/questions/52674/simplest-way-to-reverse-the-order-of-strings-in-a-make-variable
+reverse = $(if $(1),$(call reverse,$(wordlist 2,$(words $(1)),$(1)))) $(firstword $(1))
+
 # list of postings per author
 $(foreach A,$(AUTHORS),\
   $(eval POSTINGS($A) := $(patsubst %.txt,%,\
-    $(basename $(notdir $(wildcard content/$A/2???-??-??-*.txt))))))
+    $(basename $(call reverse,$(sort $(notdir $(wildcard content/$A/2???-??-??-*.txt))))))))
 
 # list of all postings, each in the form <title>/<author>
 ALL_POSTINGS := $(foreach A,$(AUTHORS),$(addsuffix /$A,${POSTINGS($A)}))
-
-# https://stackoverflow.com/questions/52674/simplest-way-to-reverse-the-order-of-strings-in-a-make-variable
-reverse = $(if $(1),$(call reverse,$(wordlist 2,$(words $(1)),$(1)))) $(firstword $(1))
 
 # access each part of a tuple of the form 'first_part/second_part'
 first_part  = $(firstword $(subst /, ,$1))
