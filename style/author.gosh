@@ -10,16 +10,18 @@ proc produce_head_html {} {
 
 	global flair author top_path
 
-	printline {<div class="author-info menu">}
-	printline {<div class="menu-inner-left">}
-	printline "  <div class=\"author-title\">"
-	printline "    <a href=\"index\"><img src=\"author.png\" alt=\"$author avatar\"/>$author</a><br/>"
-	printline "    <span class=\"flair\">$flair</span></div>"
-	printline {  <div class="visual-clear"></div>}
-	printline {  <div class="about-author">}
+	printline {        <div class="author-info menu">}
+	printline {          <div class="menu-inner">}
+	printline "            <div class=\"author-title\">"
+	printline "              <a href=\"index\"><img src=\"author.png\" alt=\"$author avatar\"/>$author</a><br/>"
+	printline "              <span class=\"flair\">$flair</span></div>"
+	printline {            <div class="visual-clear"></div>}
+	printline {            <div class="about-author">}
 }
 
 proc produce_tail_html {} {
-	printline {</div></div></div>}
+	printline {            </div>}
+	printline {          </div>}
+	printline {        </div>}
 }
 

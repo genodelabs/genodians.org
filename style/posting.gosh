@@ -28,21 +28,24 @@ proc produce_head_html {} {
 	regexp {(.*)/} $link dummy username
 
 	printline [file_content style/subdir/header-top]
-	printline "<title>$title</title>"
+	printline "      <title>$title</title>"
 	printline [file_content style/subdir/header-bottom]
-	printline {<div id="content">}
 	printline [file_content style/subdir/title]
-	printline {<div id="middle">}
-	printline "<div id=\"posting\">"
-	printline "<div class=\"post-icon\">"
-	printline " <a href=\"${top_path}$username/index\">"
-	printline "  <img class=\"small-author\" src=\"author.png\" alt=\"$author avatar\"/>"
-	printline " </a>"
-	printline "</div>"
-	printline "<h2 class=\"posting-title\">[out_html $title]</h2>"
-	printline "<span class=\"post-meta\">[nice_date $date] by"
-	printline " <a href=\"index\">$author</a></span><br/>"
-	printline "<div class=\"visual-clear\"></div>"
+	printline {    <main class="content w3-row-padding w3-auto">}
+	printline {      <div id="author-large" class="w3-col l2 w3-hide-small w3-hide-medium">}
+	printline [file_content html/$username/author]
+	printline {      </div> <!-- author-large -->}
+	printline {      <div id="post" class="w3-col l8">}
+	printline {        <div id="posting">}
+	printline {          <div class="post-icon">}
+	printline "           <a href=\"${top_path}$username/index\">"
+	printline "            <img class=\"small-author\" src=\"author.png\" alt=\"$author avatar\"/>"
+	printline {           </a>}
+	printline {          </div>}
+	printline "          <h2 class=\"posting-title\">[out_html $title]</h2>"
+	printline "          <span class=\"post-meta\">[nice_date $date] by"
+	printline "           <a href=\"index\">$author</a></span><br/>"
+	printline {          <div class="visual-clear"></div>}
 }
 
 proc produce_tail_html {} {
@@ -56,19 +59,17 @@ proc produce_tail_html {} {
 	# obtain username from link
 	regexp {(.*)/} $link dummy username
 
-	printline {<div class="discuss">}
-	printline "<a href=\"https://www.$reddit_url/submit?url=https://genodians.org/$link&title=$title\">"
-	printline "Discuss at $reddit_url"
-	printline {</a>}
-	printline {</div>}
-	printline {       </div>}
-	printline {        </div>}
-	printline {<div id="left">}
+	printline {          <div class="discuss">}
+	printline "           <a href=\"https://www.$reddit_url/submit?url=https://genodians.org/$link&title=$title\">"
+	printline "            Discuss at $reddit_url"
+	printline {           </a>}
+	printline {          </div>}
+	printline {        </div> <!-- posting -->}
+	printline {      </div> <!-- post -->}
+	printline {      <div id="author-small" class="w3-col w3-hide-large">}
 	printline [file_content html/$username/author]
-	printline {</div>}
-	printline {<div id="right">}
+	printline {      </div> <!-- author-small -->}
 	printline [file_content style/external-links-menu]
-	printline {</div>}
 	printline [file_content style/footer]
 }
 

@@ -1,5 +1,5 @@
-    <div id="title">
+    <header class="title">
       <img src="site_title.png" alt="Site logo"/><br/>
       <span>Stories around the Genode Operating System</span>
-    </div>
+    </header>
 

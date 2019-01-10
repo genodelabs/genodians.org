@@ -7,13 +7,12 @@ margin-bottom: 25px;
 padding: 0;
 }
 
-#content {
-width: 100%;
+.content {
 max-width: 1400px;
-margin: 0 auto;
+padding: 0;
 }
 
-#title {
+.title {
 position: relative;
 margin-left: auto;
 margin-right: auto;
@@ -22,35 +21,18 @@ color: #ccc;
 text-align: center;
 }
 
-#middle {
-float: left;
-width: 100%;
-}
-
-#left {
-float: left;
-margin-left: -100%;
-width: 250px;
-}
-
-#right {
-float: left;
-margin-left: -250px;
-width: 250px;
-}
-
 #post-list {
 background-color: #eee;
 box-shadow: 0px 10px 18px #112;
-margin: 0 250px 10px 250px;
-padding: 10px 40px 20px 0px;
+padding: 20px 20px 20px 20px;
+margin-bottom: 10px;
 }
 
 #posting {
 background-color: #eee;
 box-shadow: 0px 10px 18px #112;
-margin: 0 250px 10px 250px;
-padding: 20px 40px 20px 40px;
+padding: 20px 20px 20px 20px;
+margin-bottom: 10px;
 }
 
 #posting p { margin-top: 12px; margin-bottom: 12px; line-height: 125%; }
@@ -64,8 +46,8 @@ padding: 20px 40px 20px 40px;
 .flair { font-size: 80%; color: #777; }
 .about-author { padding: 10px; font-size: 90%; }
 
-#post-list ul { list-style-type: none; }
-#post-list li { padding-top: 0px; padding-bottom: 6px; margin-top: 10px; }
+#post-list ul { list-style-type: none; padding: 0; margin: 0; }
+#post-list li { padding-top: 0px; padding-bottom: 6px; }
 
 .post-meta { color: #88888a; }
 .post-meta a:link { color: #666; }
@@ -100,16 +82,8 @@ a:hover { color: #66f; }
 
 .menu-title { margin: 10px; color: #bbb; font-weight: bold; }
 
-.menu-inner-left {
-margin: 0 20px 10px 0px;
-padding-bottom: 10px;
-background: #445;
-background-image: linear-gradient(to bottom right, #556, #334);
-overflow: auto;
-}
-
-.menu-inner-right {
-margin: 0 0 10px 20px;
+.menu-inner {
+margin-bottom: 10px;
 padding-bottom: 10px;
 background: #445;
 background-image: linear-gradient(to bottom right, #556, #334);
@@ -118,25 +92,7 @@ overflow: auto;
 
 .bottom-notice a { color: #aaa; }
 .bottom-notice a:hover { color: #ddd; }
-.bottom-notice { margin-top: 30px; text-align: center; color: #888; }
+.bottom-notice { margin-top: 15px; text-align: center; color: #888; }
 
 .discuss { margin-top: 30px; margin-bottom: 10px; }
 
-@media screen and (max-width: 1000px) {
-  #left {
-  float: none;
-  clear: both;
-  margin-left: 0;
-  }
-  #right {
-  float: none;
-  margin-left: 0;
-  }
-  .menu-inner-left, .menu-inner-right {
-  margin-left: 0px;
-  margin-right: 0px;
-  margin-bottom: 10px;
-  }
-  #post-list { margin: 0 0 10px 0; }
-  #posting   { margin: 0 0 10px 0; }
-}

@@ -2,5 +2,6 @@
 <html lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="../w3.css"/> <!-- from https://www.w3schools.com/w3css/4/w3.css -->
     <link rel="stylesheet" type="text/css" href="../base.css"/>
     <link rel="shortcut icon" type="image/x-icon" href="./icon.ico"/>

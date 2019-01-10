@@ -19,7 +19,7 @@ proc process_plain_html {plaintxtblock} {
 
 	global title link author top_path
 
-	printline "<li>"
+	printline {            <li>}
 
 	# obtain date from link name, convert to nice looking format
 	regexp {/(\d\d\d\d-\d\d-\d\d)} $link dummy date
@@ -27,22 +27,22 @@ proc process_plain_html {plaintxtblock} {
 	# obtain username from link
 	regexp {(.*)/} $link dummy username
 
-	printline "<div class=\"post-icon\">"
-	printline " <a href=\"${top_path}$username/index\">"
-	printline "  <img class=\"small-author\" src=\"${top_path}$username/author.png\" alt=\"$author avatar\"/>"
-	printline " </a>"
-	printline "</div>"
-	printline "<h2 class=\"posting-title\"><a href=\"${top_path}$link\">[out_html $title]</a></h2>"
-	printline "<span class=\"post-meta\">[nice_date $date] by"
-	printline " <a href=\"${top_path}$username/index\">$author</a></span><br/>"
-	printline "<div class=\"visual-clear\"></div>"
+	printline {              <div class="post-icon">}
+	printline "               <a href=\"${top_path}$username/index\">"
+	printline "                <img class=\"small-author\" src=\"${top_path}$username/author.png\" alt=\"$author avatar\"/>"
+	printline {               </a>}
+	printline {              </div>}
+	printline "              <h2 class=\"posting-title\"><a href=\"${top_path}$link\">[out_html $title]</a></h2>"
+	printline "              <span class=\"post-meta\">[nice_date $date] by"
+	printline "               <a href=\"${top_path}$username/index\">$author</a></span><br/>"
+	printline {              <div class="visual-clear"></div>}
 
-	printline {<p class="summary">}
+	printline {              <p class="summary">}
 	foreach txtline $plaintxtblock {
 		printline "[out_html [linetxt $txtline]]" }
-	printline "<a href=\"${top_path}$link\"> Continue...</a>"
-	printline {</p>}
-	printline {</li>}
+	printline "                    <a href=\"${top_path}$link\"> Continue...</a>"
+	printline {              </p>}
+	printline {            </li>}
 
 	exit
 }

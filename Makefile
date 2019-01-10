@@ -55,7 +55,7 @@ POSTINGS_HTML := $(foreach A,$(AUTHORS),$(addprefix html/$A/,$(POSTINGS($A))))
 
 # files to generate
 GENERATED_FILES := $(POSTINGS_HTML) \
-                   html/index html/base.css html/icon.ico \
+                   html/index html/base.css html/w3.css html/icon.ico \
                    html/rss html/RSS \
                    $(foreach A,$(AUTHORS),html/$A/author.png) \
                    $(foreach A,$(AUTHORS),html/$A/index) \
@@ -89,33 +89,44 @@ html/index: $(addprefix content/,$(addsuffix .txt,$(RECENT_POSTINGS)))
 html/index:
 	$(MSG)
 	cat style/front-header > $@
-	echo "<div id=\"content\">" >> $@
 	cat style/front-title >> $@
-	echo "<div id=\"middle\">" >> $@
-	echo "<div id=\"post-list\">" >> $@
-	echo "<ul>" >> $@
+	echo "    <main class=\"content w3-row-padding w3-auto\">" >> $@
+	echo "      <div id=\"authors-large\" class=\"w3-col l2 w3-hide-small w3-hide-medium\">" >> $@
+	echo "        <div class=\"authors menu\">" >> $@
+	echo "          <div class=\"menu-inner\">" >> $@
+	echo "            <div class=\"menu-title\">Authors</div>" >> $@
+	echo "            <ul>" >> $@
+	$(foreach A,$(RECENT_AUTHORS), \
+	  echo "              <li><a href=\"$A/index\">" \
+	       "<img src=\"$A/author.png\" alt=\"${AUTHOR_NAME($A)} avatar\"/>${AUTHOR_NAME($A)}<br/>" \
+	       "<span class=\"flair\">${AUTHOR_FLAIR($A)}</span></a></li>" >> $@;)
+	echo "            </ul>" >> $@
+	echo "          </div> <!-- menu-inner -->" >> $@
+	echo "        </div> <!-- authors menu -->" >> $@
+	echo "      </div> <!-- authors-large -->" >> $@
+	echo "      <div id=\"posts\" class=\"w3-col l8\">" >> $@
+	echo "        <div id=\"post-list\">" >> $@
+	echo "          <ul>" >> $@
 	$(foreach P,$(RECENT_POSTINGS), \
 	  $(GOSH) --style style/nice_date.gosh --style style/summary.gosh \
 	          $(call gosh_metadata_args,$P) content/$P.txt >> $@;)
-	echo "</ul>" >> $@
-	echo "</div> <!-- post-list -->" >> $@
-	echo "</div> <!-- middle -->" >> $@
-	echo "<div id=\"left\">" >> $@
-	echo "<div class=\"authors menu\">" \
-	     " <div class=\"menu-inner-left\">" \
-	     "  <div class=\"menu-title\">Authors</div>" \
-	     "  <ul>" >> $@
+	echo "          </ul>" >> $@
+	echo "        </div> <!-- post-list -->" >> $@
+	echo "      </div> <!-- posts -->" >> $@
+	echo "      <div id=\"authors-small\" class=\"w3-col w3-hide-large\">" >> $@
+	echo "        <div class=\"authors menu\">" >> $@
+	echo "          <div class=\"menu-inner\">" >> $@
+	echo "            <div class=\"menu-title\">Authors</div>" >> $@
+	echo "            <ul>" >> $@
 	$(foreach A,$(RECENT_AUTHORS), \
-	  echo "  <li><a href=\"$A/index\">" \
-	       "   <img src=\"$A/author.png\" alt=\"${AUTHOR_NAME($A)} avatar\"/>${AUTHOR_NAME($A)}<br/>" \
-	       "   <span class=\"flair\">${AUTHOR_FLAIR($A)}</span></a></li>" >> $@;)
-	echo "  </ul>" \
-	     " </div>" \
-	     "</div>" \
-	     "</div> <!-- left -->" >> $@
-	echo "<div id=\"right\">" >> $@
+	  echo "            <li><a href=\"$A/index\">" \
+	       "<img src=\"$A/author.png\" alt=\"${AUTHOR_NAME($A)} avatar\"/>${AUTHOR_NAME($A)}<br/>" \
+	       "<span class=\"flair\">${AUTHOR_FLAIR($A)}</span></a></li>" >> $@;)
+	echo "            </ul>" >> $@
+	echo "          </div> <!-- menu-inner -->" >> $@
+	echo "        </div> <!-- authors menu -->" >> $@
+	echo "      </div> <!-- authors-small -->" >> $@
 	cat style/external-links-menu >> $@
-	echo "</div> <!-- right -->" >> $@
 	cat style/footer >> $@
 
 html/rss:
@@ -148,25 +159,23 @@ $(foreach A,$(AUTHORS),$(eval html/$A/index : html/$A/author))
 html/%/index:
 	$(MSG)
 	cat style/subdir/header-top > $@
-	echo "<title>Genodians.org: posts of $(shell cat authors/$*/name)</title>" >> $@
+	echo "    <title>Genodians.org: posts of $(shell cat authors/$*/name)</title>" >> $@
 	cat style/subdir/header-bottom >> $@
-	echo "<div id=\"content\">" >> $@
 	cat style/subdir/title >> $@
-	echo "<div id=\"middle\">" >> $@
-	echo "<div id=\"post-list\">" >> $@
-	echo "<ul>" >> $@
+	echo "    <main class=\"content w3-row-padding w3-auto\">" >> $@
+	echo "      <div id=\"author-all\" class=\"w3-col l2\">" >> $@
+	cat html/$*/author >> $@
+	echo "      </div> <!-- author-all -->" >> $@
+	echo "      <div id=\"posts\" class=\"w3-col l8\">" >> $@
+	echo "        <div id=\"post-list\">" >> $@
+	echo "          <ul>" >> $@
 	$(foreach P,${POSTINGS($*)}, \
 	  $(GOSH) --style style/nice_date.gosh --style style/summary.gosh --top-path "../" \
 	          $(call gosh_metadata_args,$*/$P) content/$*/$P.txt >> $@;)
-	echo "</ul>" >> $@
-	echo "</div> <!-- post-list -->" >> $@
-	echo "</div> <!-- middle -->" >> $@
-	echo "<div id=\"left\">" >> $@
-	cat html/$*/author >> $@
-	echo "</div> <!-- left -->" >> $@
-	echo "<div id=\"right\">" >> $@
+	echo "          </ul>" >> $@
+	echo "        </div> <!-- post-list -->" >> $@
+	echo "      </div> <!-- posts -->" >> $@
 	cat style/external-links-menu >> $@
-	echo "</div> <!-- right -->" >> $@
 	cat style/footer >> $@
 
 html/%.css: style/%.css

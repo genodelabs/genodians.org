@@ -1,6 +1,6 @@
-    <div class="bottom-notice">
+    </main> <!-- content -->
+    <footer class="bottom-notice">
       operated by <a href="https://www.genode-labs.com">Genode Labs</a>
-    </div>
-   </div> <!-- content -->
+    </footer>
   </body>
 </html>
