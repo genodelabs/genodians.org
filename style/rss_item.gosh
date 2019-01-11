@@ -31,14 +31,14 @@ proc process_plain_html {plaintxtblock} {
 	printline " <link>https://genodians.org/$link</link>"
 	printline " <pubDate>[nice_date $date]</pubDate>"
 	printline " <description>"
+	printline {  <![CDATA[}
 
 	incr depth 2
-
 	foreach txtline $plaintxtblock {
 		printline "[out_html [linetxt $txtline]]" }
-
 	incr depth -2
 
+	printline {  ]]>}
 	printline " </description>"
 	printline "</item>"
 
