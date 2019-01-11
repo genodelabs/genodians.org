@@ -1,4 +1,4 @@
     <header class="title">
-      <a href="../index"><img src="../site_title.png" alt="Site logo"/></a><br/>
+      <a href="../index"><img class="w3-auto" src="../site_title.png" alt="Site logo"/></a><br/>
       <span>Stories around the Genode Operating System</span>
     </header>
