@@ -32,7 +32,7 @@ proc produce_head_html {} {
 	printline [file_content style/subdir/header-bottom]
 	printline [file_content style/subdir/title]
 	printline {    <main class="content w3-row-padding w3-auto">}
-	printline {      <div id="author-large" class="w3-col l2 w3-hide-small w3-hide-medium">}
+	printline {      <div id="author-large" class="w3-col l2">}
 	printline [file_content html/$username/author]
 	printline {      </div> <!-- author-large -->}
 	printline {      <div id="post" class="w3-col l8">}
@@ -66,9 +66,6 @@ proc produce_tail_html {} {
 	printline {          </div>}
 	printline {        </div> <!-- posting -->}
 	printline {      </div> <!-- post -->}
-	printline {      <div id="author-small" class="w3-col w3-hide-large">}
-	printline [file_content html/$username/author]
-	printline {      </div> <!-- author-small -->}
 	printline [file_content style/external-links-menu]
 	printline [file_content style/footer]
 }
