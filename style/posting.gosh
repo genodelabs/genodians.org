@@ -60,7 +60,7 @@ proc produce_tail_html {} {
 	regexp {(.*)/} $link dummy username
 
 	printline {          <div class="discuss">}
-	printline "           <a href=\"https://www.$reddit_url/submit?url=https://genodians.org/$link&title=$title\">"
+	printline "           <a href=\"https://old.$reddit_url/submit?url=https://genodians.org/$link&title=$title\">"
 	printline "            Discuss at $reddit_url"
 	printline {           </a>}
 	printline {          </div>}
