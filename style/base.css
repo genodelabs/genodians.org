@@ -40,7 +40,7 @@ p.summary { margin: 0px; margin-bottom: 12px; line-height: 125%; }
 #posting p { margin-top: 12px; margin-bottom: 12px; line-height: 125%; }
 
 .authors img { width: 35px; height: 35px; margin-right: 10px; float: left; }
-.authors li { clear: both; padding-top: 10px; }
+.authors li { display:flex; clear: both; padding-top: 10px; }
 .author-info img { width: 55px; height: 55px; margin-right: 10px; float: left;}
 .author-info p { margin-bottom: 10px; }
 .author-title { margin: 10px; }
