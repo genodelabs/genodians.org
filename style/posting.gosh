@@ -32,10 +32,10 @@ proc produce_head_html {} {
 	printline [file_content style/subdir/header-bottom]
 	printline [file_content style/subdir/title]
 	printline {    <main class="content w3-row-padding w3-auto">}
-	printline {      <div id="author-large" class="w3-col l2">}
+	printline {      <div id="author-large" class="w3-col x1">}
 	printline [file_content html/$username/author]
 	printline {      </div> <!-- author-large -->}
-	printline {      <div id="post" class="w3-col l8">}
+	printline {      <div id="post" class="w3-col x3">}
 	printline {        <div id="posting">}
 	printline {          <div class="post-icon">}
 	printline "           <a href=\"${top_path}$username/index\">"

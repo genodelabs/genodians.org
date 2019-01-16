@@ -91,7 +91,7 @@ html/index:
 	cat style/front-header > $@
 	cat style/front-title >> $@
 	echo "    <main class=\"content w3-row-padding w3-auto\">" >> $@
-	echo "      <div id=\"authors-large\" class=\"w3-col l2 w3-hide-small w3-hide-medium\">" >> $@
+	echo "      <div id=\"authors-large\" class=\"w3-col x1 w3-hide-small w3-hide-medium\">" >> $@
 	echo "        <div class=\"authors menu\">" >> $@
 	echo "          <div class=\"menu-inner\">" >> $@
 	echo "            <div class=\"menu-title\">Authors</div>" >> $@
@@ -104,7 +104,7 @@ html/index:
 	echo "          </div> <!-- menu-inner -->" >> $@
 	echo "        </div> <!-- authors menu -->" >> $@
 	echo "      </div> <!-- authors-large -->" >> $@
-	echo "      <div id=\"posts\" class=\"w3-col l8\">" >> $@
+	echo "      <div id=\"posts\" class=\"w3-col x3\">" >> $@
 	echo "        <div id=\"post-list\">" >> $@
 	echo "          <ul>" >> $@
 	$(foreach P,$(RECENT_POSTINGS), \
@@ -163,10 +163,10 @@ html/%/index:
 	cat style/subdir/header-bottom >> $@
 	cat style/subdir/title >> $@
 	echo "    <main class=\"content w3-row-padding w3-auto\">" >> $@
-	echo "      <div id=\"author-all\" class=\"w3-col l2\">" >> $@
+	echo "      <div id=\"author-all\" class=\"w3-col x1\">" >> $@
 	cat html/$*/author >> $@
 	echo "      </div> <!-- author-all -->" >> $@
-	echo "      <div id=\"posts\" class=\"w3-col l8\">" >> $@
+	echo "      <div id=\"posts\" class=\"w3-col x3\">" >> $@
 	echo "        <div id=\"post-list\">" >> $@
 	echo "          <ul>" >> $@
 	$(foreach P,${POSTINGS($*)}, \

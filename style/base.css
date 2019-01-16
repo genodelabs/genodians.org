@@ -96,3 +96,8 @@ overflow: auto;
 
 .discuss { margin-top: 30px; margin-bottom: 10px; }
 
+/* tweak w3.css large for three-column layout */
+@media (min-width:993px){
+	.w3-col.x1 { width: 20%; }
+	.w3-col.x3 { width: 60%; }
+}
