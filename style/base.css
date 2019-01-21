@@ -96,6 +96,16 @@ overflow: auto;
 
 .discuss { margin-top: 30px; margin-bottom: 10px; }
 
+code,kbd,pre,samp {
+border-left: 2px solid #ccc;
+padding-left: 4px;
+}
+@media (max-width:992px){
+	code,kbd,pre,samp {
+	font-size: 75%;
+	}
+}
+
 /* tweak w3.css large for three-column layout */
 @media (min-width:993px){
 	.w3-col.x1 { width: 20%; }

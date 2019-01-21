@@ -84,7 +84,9 @@ be done with spaces, not tabs. Within a posting, please do not use GOSH's
 document-structuring features (chapters, sections) except for named
 paragraphs. A named paragraph is a line of text underlined with '---'
 characters, which is useful to structure a larger posting into multiple
-sections.
+sections. For code examples please keep in mind that the site layout
+provides a horizontally limited content column, which fits
+approximately 70 monospace characters.
 
 
 Adding your content to genodians.org
