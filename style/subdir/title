@@ -1,4 +1,4 @@
     <header class="title">
       <a href="../index"><img class="w3-auto" src="../site_title.png" alt="Site logo"/></a><br/>
-      <span>Stories around the Genode Operating System</span>
+      <span>Stories around the Genode Operating System <a href="../rss"><img style="height:1.1em" src="../rss.png" alt="RSS feed"/></a></span>
     </header>
