@@ -29,6 +29,7 @@ proc process_plain_html {plaintxtblock} {
 
 	printline " <title>[out_html $title]</title>"
 	printline " <link>https://genodians.org/$link</link>"
+	printline " <guid isPermaLink=\"false\">$link</guid>"
 	printline " <pubDate>[nice_date $date]</pubDate>"
 	printline " <description>"
 	printline {  <![CDATA[}

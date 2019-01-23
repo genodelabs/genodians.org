@@ -2,5 +2,6 @@
 <rss version="2.0">
  <channel>
   <title>Genodians.org - Stories around the Genode Operating System</title>
+  <description>Stories around the Genode Operating System</description>
   <link>https://genodians.org</link>
   <language>en-us</language>
