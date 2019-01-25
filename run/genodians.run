@@ -81,10 +81,10 @@ if {![file exists bin/example.pem]} {
 
 build_boot_image { example.pem }
 
-append_if [have_spec x86]     qemu_args " -net nic,model=e1000 "
-append_if [have_spec lan9118] qemu_args " -net nic,model=lan9118 "
+append_if [have_spec x86]     qemu_args " -device e1000,netdev=net0 "
+append_if [have_spec lan9118] qemu_args " -device lan9118,netdev=net0 "
 
-append qemu_args " -net user -redir tcp:5555::80 -redir tcp:5556::443 "
+append qemu_args " -netdev user,id=net0,hostfwd=tcp::5555-:80,hostfwd=tcp::5556-:443 "
 append qemu_args " -nographic -serial mon:stdio "
 
 run_genode_until forever
