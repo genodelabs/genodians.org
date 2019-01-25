@@ -1,3 +1,7 @@
+proc rfc822_date { date } {
+  return [clock format [clock scan $date] -locale C -timezone UTC -format "%a, %d %b %Y %H:%M %z"]
+}
+
 
 proc produce_head_html {} { }
 
@@ -30,7 +34,7 @@ proc process_plain_html {plaintxtblock} {
 	printline " <title>[out_html $title]</title>"
 	printline " <link>https://genodians.org/$link</link>"
 	printline " <guid isPermaLink=\"false\">$link</guid>"
-	printline " <pubDate>[nice_date $date]</pubDate>"
+	printline " <pubDate>[rfc822_date $date]</pubDate>"
 	printline " <description>"
 	printline {  <![CDATA[}
 
