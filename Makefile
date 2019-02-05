@@ -43,7 +43,7 @@ $(foreach A,$(REV_AUTHORS),$(if $(filter $A,$(RECENT_AUTHORS)),,\
 
 # list of most recent postings
 RECENT_POSTINGS := $(foreach P,\
-                     $(wordlist 1,10,$(REV_POSTINGS)),\
+                     $(wordlist 1,100,$(REV_POSTINGS)),\
                        $(call second_part,$P)/$(call first_part,$P))
 
 HTML_DIRS := html $(addprefix html/,$(AUTHORS))
