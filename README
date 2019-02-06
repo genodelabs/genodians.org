@@ -78,15 +78,34 @@ Each posting is a file named _YYYY-MM-DD-title-on-the-posting.txt_ where
 _YYYY_ is the year, _MM_ the month, and _DD_ the day of month. As the title
 will be used for posting's URL, keep it as concise and expressive as possible.
 
-The full title of the posting is given at the beginning of the text file in
-the form of a horizontally centered line of text. Note that the centering must
-be done with spaces, not tabs. Within a posting, please do not use GOSH's
-document-structuring features (chapters, sections) except for named
-paragraphs. A named paragraph is a line of text underlined with '---'
-characters, which is useful to structure a larger posting into multiple
-sections. For code examples please keep in mind that the site layout
-provides a horizontally limited content column, which fits
-approximately 70 monospace characters.
+
+Form of a posting
+-----------------
+
+* The full title of a posting is given at the beginning of the text file in
+  the form of a horizontally centered line of text. Note that the centering
+  must be done with spaces, not tabs.
+
+* The first paragraph is taken as a summary of the posting. It is displayed
+  along the posting title on the front page and on the author's overview page.
+  So it should ideally give a brief glimpse on the content - just enough to
+  wet the appetite of the reader.
+
+* Within a posting, please avoid using GOSH's document-structuring features
+  (chapters, sections) except for named paragraphs. A named paragraph is a
+  line of text underlined with '---' characters, which is useful to structure
+  a larger posting into multiple sections.
+
+* For code examples, please keep in mind that the site layout provides a
+  horizontally limited content column, which fits approximately 70 monospace
+  characters.
+
+* If your posting contains quotes, consider using GOSH's markup for _italic_
+  text by prefixing and suffixing each line of the quote with underscore
+  characters. This way, quotes nicely stand out from your own text.
+
+Please test your posting offline for visual glitches (see below for how that
+works) before publishing it.
 
 
 Adding your content to genodians.org
