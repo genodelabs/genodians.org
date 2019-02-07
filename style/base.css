@@ -57,6 +57,7 @@ p.summary { margin: 0px; margin-bottom: 12px; line-height: 130%; }
 .post-meta a:hover { color: #444; }
 .post-icon { clear: both; float: left; margin-top: 5px; margin-right: 5px; }
 .captionedimage { margin: auto; }
+.captionedimage img { max-width: 100%; }
 
 h2 {
 margin-top: 2px;
@@ -99,6 +100,7 @@ overflow: auto;
 code,kbd,pre,samp {
 border-left: 2px solid #ccc;
 padding-left: 4px;
+overflow-x: auto;
 }
 @media (max-width:992px){
 	code,kbd,pre,samp {
