@@ -19,7 +19,7 @@ proc nice_date { date } {
 
 	incr month -1
 
-	set months { January Februar March April May June July August September
+	set months { January February March April May June July August September
 	             October November December }
 
 	return "[lindex $months $month] $day $year"
