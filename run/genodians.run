@@ -4,7 +4,8 @@ proc depot_user {} { return [get_cmd_arg --depot-user genodelabs] }
 
 import_from_depot [depot_user]/src/[base_src] \
                   [depot_user]/pkg/[drivers_nic_pkg] \
-                  [depot_user]/pkg/genodians
+                  [depot_user]/pkg/genodians \
+                  [depot_user]/pkg/system_rtc-[board]
 
 install_config {
 
@@ -32,6 +33,25 @@ install_config {
 		<provides> <service name="Timer"/> </provides>
 		<config/>
 	</start>
+
+	<start name="system_rtc" caps="1000">
+		<resource name="RAM" quantum="6M"/>
+		<binary name="init"/>
+		<provides> <service name="Rtc"/> </provides>
+		<route>
+			<service name="ROM" label="config"> <parent label="system_rtc.config"/> </service>
+			<service name="IO_MEM">  <parent/> </service>
+			<service name="IO_PORT"> <parent/> </service>
+			<service name="IRQ">     <parent/> </service>
+			<service name="LOG">     <parent/> </service>
+			<service name="PD">      <parent/> </service>
+			<service name="RM">      <parent/> </service>
+			<service name="CPU">     <parent/> </service>
+			<service name="ROM">     <parent/> </service>
+			<service name="Timer">   <child name="timer"/> </service>
+		</route>
+	</start>
+
 
 	<start name="drivers" caps="1000">
 		<resource name="RAM" quantum="32M" constrain_phys="yes"/>
@@ -63,6 +83,7 @@ install_config {
 			<service name="ROM">   <parent/> </service>
 			<service name="Timer"> <child name="timer"/> </service>
 			<service name="Nic">   <child name="drivers"/> </service>
+			<service name="Rtc">   <child name="system_rtc"/> </service>
 		</route>
 	</start>
 
