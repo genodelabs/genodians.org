@@ -1,6 +1,7 @@
 _/raw/genodians
 _/src/init
 _/src/vfs_lxip
+_/src/vfs_jitterentropy
 _/src/vfs
 _/src/vfs_pipe
 _/src/cached_fs_rom

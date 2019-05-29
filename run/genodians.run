@@ -5,7 +5,8 @@ proc depot_user {} { return [get_cmd_arg --depot-user genodelabs] }
 import_from_depot [depot_user]/src/[base_src] \
                   [depot_user]/pkg/[drivers_nic_pkg] \
                   [depot_user]/pkg/genodians \
-                  [depot_user]/pkg/system_rtc-[board]
+                  [depot_user]/pkg/system_rtc-[board] \
+                  [depot_user]/src/vfs_jitterentropy
 
 install_config {
 
