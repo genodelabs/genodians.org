@@ -66,12 +66,12 @@ extract.config:
 
 define EXTRACT_CONFIG_HEAD
 	<config verbose="yes">
+		<libc stdout="/dev/log" stderr="/dev/log" rtc="/dev/null"
+		      update_mtime="no"/>
 		<vfs>
 			<dir name="download"> <fs label="download"/> </dir>
 			<dir name="content"> <fs label="content" writeable="yes"/> </dir>
-			<dir name="dev">
-				<log/> <null/> <inline name="rtc">2000-01-01 00:00</inline>
-			</dir>
+			<dir name="dev"> <log/> <null/> </dir>
 		</vfs>
 endef
 
