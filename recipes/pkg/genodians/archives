@@ -2,6 +2,7 @@ _/raw/genodians
 _/src/init
 _/src/vfs_lxip
 _/src/vfs
+_/src/cached_fs_rom
 _/src/libc
 _/src/posix
 _/src/zlib
