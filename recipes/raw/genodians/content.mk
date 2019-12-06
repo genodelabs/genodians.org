@@ -1,6 +1,9 @@
-content: genodians.config nic_router.config import.config lighttpd.conf wipe.config
+RAW_FILES := genodians.config nic_router.config import.config \
+             lighttpd.conf wipe.config generate.config
 
-genodians.config nic_router.config import.config wipe.config lighttpd.conf:
+content: $(RAW_FILES)
+
+$(RAW_FILES):
 	cp $(REP_DIR)/recipes/raw/genodians/$@ $@
 
 # tar archive of the static site generator, to be executed on target

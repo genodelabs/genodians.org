@@ -51,7 +51,7 @@ install_config {
 		</route>
 	</start>
 
-	<start name="genodians" caps="3000" priority="-1">
+	<start name="genodians" caps="5000" priority="-1">
 		<resource name="RAM" quantum="256M"/>
 		<binary name="init"/>
 		<route>

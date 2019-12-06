@@ -2,6 +2,7 @@ _/raw/genodians
 _/src/init
 _/src/vfs_lxip
 _/src/vfs
+_/src/vfs_pipe
 _/src/cached_fs_rom
 _/src/libc
 _/src/posix
@@ -16,7 +17,6 @@ _/src/extract
 _/src/libarchive
 _/src/liblzma
 _/src/nic_router
-_/src/noux
 _/src/coreutils-minimal
 _/src/bash-minimal
 _/src/gnumake

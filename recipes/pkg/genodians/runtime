@@ -19,7 +19,6 @@
 		<rom label="init"/>
 		<rom label="libarchive.lib.so"/>
 		<rom label="libc.lib.so"/>
-		<rom label="libc_noux.lib.so"/>
 		<rom label="libcrypto.lib.so"/>
 		<rom label="liblzma.lib.so"/>
 		<rom label="libm.lib.so"/>
@@ -31,13 +30,13 @@
 		<rom label="make.tar"/>
 		<rom label="nic_router"/>
 		<rom label="nic_router.config"/>
-		<rom label="noux"/>
 		<rom label="posix.lib.so"/>
 		<rom label="sequence"/>
 		<rom label="tclsh.tar"/>
 		<rom label="vfs"/>
 		<rom label="vfs.lib.so"/>
 		<rom label="vfs_lxip.lib.so"/>
+		<rom label="vfs_pipe.lib.so"/>
 		<rom label="zlib.lib.so"/>
 	</content>
 
