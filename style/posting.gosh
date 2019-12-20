@@ -28,6 +28,11 @@ proc produce_head_html {} {
 	regexp {(.*)/} $link dummy username
 
 	printline [file_content style/subdir/header-top]
+	printline "      <meta property=\"og:title\" content=\"$title\"/>"
+	printline "      <meta property=\"og:url\" content=\"https://genodians.org/$link\"/>"
+	printline "      <meta property=\"og:image\" content=\"https://genodians.org/$username/author.png\"/>"
+	printline {      <meta property="og:type" content="website"/>}
+	printline {      <meta property="og:site_name" content="Genodians.org"/>}
 	printline "      <title>$title</title>"
 	printline [file_content style/subdir/header-bottom]
 	printline [file_content style/subdir/title]
