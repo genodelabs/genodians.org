@@ -97,7 +97,16 @@ overflow: auto;
 
 .discuss { margin-top: 30px; margin-bottom: 10px; }
 
+tt {
+	font-size: 92%;
+	background-color: rgba(27,31,35,.04);
+	padding: 2px 4px 2px 4px;
+	margin: 0px;
+	border-radius: 3px;
+}
+
 code,kbd,pre,samp {
+font-size: 92%;
 border-left: 2px solid #ccc;
 padding-left: 4px;
 overflow-x: auto;
