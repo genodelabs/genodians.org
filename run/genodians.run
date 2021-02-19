@@ -69,12 +69,14 @@ install_config {
 			<service name="CPU">     <parent/> </service>
 			<service name="ROM">     <parent/> </service>
 			<service name="Timer">   <child name="timer"/> </service>
+			<service name="Uplink">  <child name="genodians"/> </service>
 		</route>
 	</start>
 
 	<start name="genodians" caps="5000" priority="-1">
 		<resource name="RAM" quantum="512M"/>
 		<binary name="init"/>
+		<provides> <service name="Uplink"/> </provides>
 		<route>
 			<service name="ROM" label="config"> <parent label="genodians.config"/> </service>
 			<service name="LOG">   <parent/> </service>
