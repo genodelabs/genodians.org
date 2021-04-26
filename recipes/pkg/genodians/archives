@@ -12,8 +12,7 @@ _/src/fetchurl
 _/src/curl
 _/src/libssh
 _/src/lighttpd
-_/src/libcrypto
-_/src/libssl
+_/src/openssl
 _/src/extract
 _/src/libarchive
 _/src/liblzma
