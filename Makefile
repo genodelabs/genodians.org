@@ -192,3 +192,38 @@ html/%/author.png: content/%/author.png
 clean:
 	rm -rf html
 
+
+#
+# Debugging support
+#
+# The following rules download and archive the content of all authors.
+# By using the resulting content.tar archive, the genodians scenario can be
+# executed without the download and extraction phase.
+#
+
+ALL_AUTHORS := $(notdir $(wildcard authors/*))
+
+$(foreach A,$(ALL_AUTHORS),$(eval AUTHOR_ZIP_URL($A) += $(shell cat authors/$A/zip_url)))
+
+author_zip_url = ${AUTHOR_ZIP_URL($(call first_part,$1))}
+
+downloaded_content:
+	mkdir -p downloaded_content
+	(\
+		cd downloaded_content; \
+		$(foreach A,$(ALL_AUTHORS),\
+			mkdir -p $A; \
+			wget -O $A.zip $(call author_zip_url,$A); \
+			unzip -j -d $A $A.zip; \
+			rm $A.zip; \
+		) \
+	)
+
+content.tar: downloaded_content
+	tar cf content.tar -C downloaded_content .
+
+clean: clean_downloaded_content
+
+clean_downloaded_content:
+	rm -rf downloaded_content content.tar
+
