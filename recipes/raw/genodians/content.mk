@@ -38,7 +38,7 @@ fetchurl.config:
 	   echo '$(subst $(NEWLINE),\n,$(FETCHURL_CONFIG_TAIL))'; ) > $@;
 
 define FETCHURL_CONFIG_HEAD
-	<config verbose="yes">
+	<config verbose="yes" ignore_failures="yes">
 		<vfs>
 			<dir name="dev">
 				<log/> <null/> <inline name="rtc">2000-01-01 00:00</inline>

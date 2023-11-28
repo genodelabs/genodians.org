@@ -9,6 +9,13 @@ GOSH      := ./tool/gosh/gosh --style html --html-img-format png --utf8
 # list of authors corresponds to the subdirectories in content/
 AUTHORS := $(notdir $(wildcard content/*))
 
+# ignore the author if there is no author.txt
+INCOMPLETE_AUTHORS :=
+$(foreach A,$(AUTHORS), $(if $(wildcard content/$A/author.txt),,\
+	$(eval INCOMPLETE_AUTHORS += $A)))
+AUTHORS := $(filter-out $(INCOMPLETE_AUTHORS),$(AUTHORS))
+
+
 # obtain author names and further info
 $(foreach A,$(AUTHORS),$(eval AUTHOR_NAME($A)  += $(shell cat authors/$A/name)))
 $(foreach A,$(AUTHORS),$(eval AUTHOR_FLAIR($A) += $(shell cat authors/$A/flair)))
