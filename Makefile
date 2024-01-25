@@ -53,12 +53,15 @@ $(foreach A,$(REV_AUTHORS),$(if $(filter $A,$(RECENT_AUTHORS)),,\
 # list of most recent postings
 RECENT_POSTINGS := $(wordlist 1,25,$(REV_POSTINGS))
 
-HTML_DIRS := html $(addprefix html/,$(AUTHORS))
+HTML_DIRS := html $(addprefix html/,$(AUTHORS)) $(addprefix html/summary/,$(AUTHORS))
 $(HTML_DIRS):
 	mkdir -p $@
 
 # list of HTML postings to generate
 POSTINGS_HTML := $(foreach A,$(AUTHORS),$(addprefix html/$A/,$(POSTINGS($A))))
+
+# list of to-be-generated summary snippets
+SUMMARIES := $(foreach A,$(AUTHORS),$(addprefix html/summary/$A/,$(POSTINGS($A))))
 
 # files to generate
 GENERATED_FILES := $(POSTINGS_HTML) \
@@ -76,7 +79,7 @@ $(foreach A,$(AUTHORS),$(eval $(addprefix html/$A/,${POSTINGS($A)}) : html/$A/au
 
 default: $(GENERATED_FILES)
 
-$(GENERATED_FILES): $(wildcard style/*) Makefile $(HTML_DIRS)
+$(GENERATED_FILES): $(wildcard style/*) Makefile | $(HTML_DIRS)
 
 gosh_metadata_args = --link $1 \
                      --author "$(call author_name,$1)" \
@@ -87,11 +90,18 @@ html/%: content/%.txt
 	$(GOSH) --style style/nice_date.gosh --style style/posting.gosh --top-path "../" \
 	        $(call gosh_metadata_args,$*) $< > $@
 
-# archive page depends on all postings
-html/archive: $(addprefix content/,$(addsuffix .txt,$(REV_POSTINGS)))
+# generate summary snippets
+.INTERMEDIATE: $(SUMMARIES)
+$(SUMMARIES): html/summary/%: $(addprefix content/,$(addsuffix .txt,%))
+	$(MSG)
+	$(GOSH) --style style/nice_date.gosh --style style/summary.gosh \
+	  $(call gosh_metadata_args,$*) $< > $@;
 
-# front page depends on the most recent postings
-html/index: $(addprefix content/,$(addsuffix .txt,$(RECENT_POSTINGS)))
+# archive page depends on summary snippets
+html/archive: $(addprefix html/summary/,$(REV_POSTINGS))
+
+# front page depends on summary snippets
+html/index: $(addprefix html/summary/,$(RECENT_POSTINGS))
 
 #
 # Front page and archive page with list of most recent authors and summaries of postings
@@ -117,12 +127,11 @@ html/index html/archive:
 	echo "      <div id=\"posts\" class=\"w3-col x3\">" >> $@
 	echo "        <div id=\"post-list\">" >> $@
 	echo "          <ul>" >> $@
-	$(foreach P,$(filter content/%.txt,$^), \
-	  $(GOSH) --style style/nice_date.gosh --style style/summary.gosh \
-	      $(call gosh_metadata_args,$(P:content/%.txt=%)) $P >> $@;)
+	$(foreach P,$(filter html/summary/%,$^), \
+	  cat $(P) >> $@;)
 	echo "          </ul>" >> $@
 	$(if $(filter %/index,$@), \
-	  echo "          <div><a href=\"archive#$(patsubst content/%.txt,%,$(lastword $^))\">more</a></div>" >> $@;)
+	  echo "          <div><a href=\"archive#$(patsubst html/summary/%,%,$(lastword $^))\">more</a></div>" >> $@;)
 	echo "        </div> <!-- post-list -->" >> $@
 	echo "      </div> <!-- posts -->" >> $@
 	echo "      <div id=\"authors-small\" class=\"w3-col w3-hide-large\">" >> $@
@@ -165,6 +174,9 @@ html/%/author:
 $(foreach A,$(AUTHORS),$(eval html/$A/author : content/$A/author.txt))
 $(foreach A,$(AUTHORS),$(eval html/$A/index : html/$A/author))
 
+# let all <author>/index files depend on summaries
+$(foreach A,$(AUTHORS),$(eval html/$A/index : $(addprefix html/summary/$A/,${POSTINGS($A)})))
+
 #
 # <author>/index with a list of all postings written by the author
 #
@@ -182,8 +194,7 @@ html/%/index:
 	echo "        <div id=\"post-list\">" >> $@
 	echo "          <ul>" >> $@
 	$(foreach P,${POSTINGS($*)}, \
-	  $(GOSH) --style style/nice_date.gosh --style style/summary.gosh --top-path "../" \
-	          $(call gosh_metadata_args,$*/$P) content/$*/$P.txt >> $@;)
+	  cat html/summary/$*/$P | sed s#=\"$*/#=\"#g >> $@;)
 	echo "          </ul>" >> $@
 	echo "        </div> <!-- post-list -->" >> $@
 	echo "      </div> <!-- posts -->" >> $@

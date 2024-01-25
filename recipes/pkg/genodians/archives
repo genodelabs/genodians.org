@@ -22,4 +22,6 @@ _/src/bash-minimal
 _/src/gnumake
 _/src/sequence
 _/src/tclsh
+_/src/sed
+_/src/pcre
 _/src/dummy

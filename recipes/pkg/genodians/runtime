@@ -33,11 +33,13 @@
 		<rom label="posix.lib.so"/>
 		<rom label="sequence"/>
 		<rom label="tclsh.tar"/>
+		<rom label="sed.tar"/>
 		<rom label="vfs"/>
 		<rom label="vfs.lib.so"/>
 		<rom label="vfs_lxip.lib.so"/>
 		<rom label="vfs_pipe.lib.so"/>
 		<rom label="zlib.lib.so"/>
+		<rom label="pcre.lib.so"/>
 	</content>
 
 </runtime>
