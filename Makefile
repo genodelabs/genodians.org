@@ -108,47 +108,46 @@ html/index: $(addprefix html/summary/,$(RECENT_POSTINGS))
 #
 html/index html/archive:
 	$(MSG)
-	cat style/front-header > $@
-	cat style/front-title >> $@
-	echo "    <main class=\"content w3-row-padding w3-auto\">" >> $@
-	echo "      <div id=\"authors-large\" class=\"w3-col x1 w3-hide-small w3-hide-medium\">" >> $@
-	echo "        <div class=\"authors menu\">" >> $@
-	echo "          <div class=\"menu-inner\">" >> $@
-	echo "            <div class=\"menu-title\">Authors</div>" >> $@
-	echo "            <ul>" >> $@
+	cat style/front-header \
+	    style/front-title > $@
+	echo -e "    <main class=\"content w3-row-padding w3-auto\">\n" \
+	        "      <div id=\"authors-large\" class=\"w3-col x1 w3-hide-small w4-hide-medium\">\n" \
+	        "        <div class=\"authors menu\">\n" \
+	        "          <div class=\"menu-inner\">\n" \
+	        "            <div class=\"menu-title\">Authors</div>\n" \
+	        "            <ul>" >> $@
 	$(foreach A,$(RECENT_AUTHORS), \
 	  echo "              <li><a href=\"$A/index\">" \
 	       "<img src=\"$A/author.png\" alt=\"${AUTHOR_NAME($A)} avatar\"/>${AUTHOR_NAME($A)}<br/>" \
 	       "<span class=\"flair\">${AUTHOR_FLAIR($A)}</span></a></li>" >> $@;)
-	echo "            </ul>" >> $@
-	echo "          </div> <!-- menu-inner -->" >> $@
-	echo "        </div> <!-- authors menu -->" >> $@
-	echo "      </div> <!-- authors-large -->" >> $@
-	echo "      <div id=\"posts\" class=\"w3-col x3\">" >> $@
-	echo "        <div id=\"post-list\">" >> $@
-	echo "          <ul>" >> $@
-	$(foreach P,$(filter html/summary/%,$^), \
-	  cat $(P) >> $@;)
+	echo -e "            </ul>\n" \
+	        "          </div> <!-- menu-inner -->\n" \
+	        "        </div> <!-- authors menu -->\n" \
+	        "      </div> <!-- authors-large -->\n" \
+	        "      <div id=\"posts\" class=\"w3-col x3\">\n" \
+	        "        <div id=\"post-list\">\n" \
+	        "          <ul>" >> $@
+	cat $(filter html/summary/%,$^) >> $@
 	echo "          </ul>" >> $@
 	$(if $(filter %/index,$@), \
 	  echo "          <div><a href=\"archive#$(patsubst html/summary/%,%,$(lastword $^))\">more</a></div>" >> $@;)
-	echo "        </div> <!-- post-list -->" >> $@
-	echo "      </div> <!-- posts -->" >> $@
-	echo "      <div id=\"authors-small\" class=\"w3-col w3-hide-large\">" >> $@
-	echo "        <div class=\"authors menu\">" >> $@
-	echo "          <div class=\"menu-inner\">" >> $@
-	echo "            <div class=\"menu-title\">Authors</div>" >> $@
-	echo "            <ul>" >> $@
+	echo -e "        </div> <!-- post-list -->\n" \
+	        "      </div> <!-- posts -->\n" \
+	        "      <div id=\"authors-small\" class=\"w3-col w3-hide-large\">\n" \
+	        "        <div class=\"authors menu\">\n" \
+	        "          <div class=\"menu-inner\">\n" \
+	        "            <div class=\"menu-title\">Authors</div>\n" \
+	        "            <ul>" >> $@
 	$(foreach A,$(RECENT_AUTHORS), \
 	  echo "            <li><a href=\"$A/index\">" \
 	       "<img src=\"$A/author.png\" alt=\"${AUTHOR_NAME($A)} avatar\"/>${AUTHOR_NAME($A)}<br/>" \
 	       "<span class=\"flair\">${AUTHOR_FLAIR($A)}</span></a></li>" >> $@;)
-	echo "            </ul>" >> $@
-	echo "          </div> <!-- menu-inner -->" >> $@
-	echo "        </div> <!-- authors menu -->" >> $@
-	echo "      </div> <!-- authors-small -->" >> $@
-	cat style/external-links-menu >> $@
-	cat style/footer >> $@
+	echo "            </ul>\n" \
+	     "          </div> <!-- menu-inner -->\n" \
+	     "        </div> <!-- authors menu -->\n" \
+	     "      </div> <!-- authors-small -->" >> $@
+	cat style/external-links-menu \
+	    style/footer >> $@
 
 html/rss:
 	$(MSG)
@@ -184,22 +183,21 @@ html/%/index:
 	$(MSG)
 	cat style/subdir/header-top > $@
 	echo "    <title>Genodians.org: posts of $(shell cat authors/$*/name)</title>" >> $@
-	cat style/subdir/header-bottom >> $@
-	cat style/subdir/title >> $@
-	echo "    <main class=\"content w3-row-padding w3-auto\">" >> $@
-	echo "      <div id=\"author-all\" class=\"w3-col x1\">" >> $@
+	cat style/subdir/header-bottom \
+	    style/subdir/title >> $@
+	echo -e "    <main class=\"content w3-row-padding w3-auto\">\n" \
+	        "      <div id=\"author-all\" class=\"w3-col x1\">" >> $@
 	cat html/$*/author >> $@
-	echo "      </div> <!-- author-all -->" >> $@
-	echo "      <div id=\"posts\" class=\"w3-col x3\">" >> $@
-	echo "        <div id=\"post-list\">" >> $@
-	echo "          <ul>" >> $@
-	$(foreach P,${POSTINGS($*)}, \
-	  cat html/summary/$*/$P | sed s#=\"$*/#=\"#g >> $@;)
-	echo "          </ul>" >> $@
-	echo "        </div> <!-- post-list -->" >> $@
-	echo "      </div> <!-- posts -->" >> $@
-	cat style/external-links-menu >> $@
-	cat style/footer >> $@
+	echo -e "      </div> <!-- author-all -->\n" \
+	        "      <div id=\"posts\" class=\"w3-col x3\">\n" \
+	        "        <div id=\"post-list\">\n" \
+	        "          <ul>" >> $@
+	cat $(addprefix html/summary/$*/,${POSTINGS($*)}) | sed 's#=\"$*/#=\"#g' >> $@
+	echo -e "          </ul>\n" \
+	        "        </div> <!-- post-list -->\n" \
+	        "      </div> <!-- posts -->" >> $@
+	cat style/external-links-menu \
+	    style/footer >> $@
 
 html/%.css: style/%.css
 	cp $< $@
