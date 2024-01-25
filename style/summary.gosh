@@ -32,7 +32,7 @@ proc process_plain_html {plaintxtblock} {
 	printline "                <img class=\"small-author\" src=\"${top_path}$username/author.png\" alt=\"$author avatar\"/>"
 	printline {               </a>}
 	printline {              </div>}
-	printline "              <h2 class=\"posting-title\"><a href=\"${top_path}$link\">[out_html $title]</a></h2>"
+	printline "              <h2 class=\"posting-title\"><a href=\"${top_path}$link\" id=\"$link\">[out_html $title]</a></h2>"
 	printline "              <span class=\"post-meta\">[nice_date $date] by"
 	printline "               <a href=\"${top_path}$username/index\">$author</a></span><br/>"
 	printline {              <div class="visual-clear"></div>}

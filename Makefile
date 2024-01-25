@@ -39,9 +39,11 @@ second_part = $(notdir $1)
 author_name  = ${AUTHOR_NAME($(call first_part,$1))}
 author_flair = ${AUTHOR_FLAIR($(call first_part,$1))}
 
-# list of postings and authors sorted by date (most recent first)
-REV_POSTINGS := $(call reverse,$(sort $(ALL_POSTINGS)))
-REV_AUTHORS  := $(foreach P,$(REV_POSTINGS),$(call second_part,$P))
+# list of postings and authors sorted by date (most recent first) in the form <author>/<title>
+REV_POSTINGS := $(foreach P,\
+                  $(call reverse,$(sort $(ALL_POSTINGS))),\
+                    $(call second_part,$P)/$(call first_part,$P))
+REV_AUTHORS  := $(foreach P,$(REV_POSTINGS),$(call first_part,$P))
 
 # list of authors ordered by their most recent contribution
 RECENT_AUTHORS :=
@@ -49,9 +51,7 @@ $(foreach A,$(REV_AUTHORS),$(if $(filter $A,$(RECENT_AUTHORS)),,\
 	$(eval RECENT_AUTHORS += $A)))
 
 # list of most recent postings
-RECENT_POSTINGS := $(foreach P,\
-                     $(wordlist 1,100,$(REV_POSTINGS)),\
-                       $(call second_part,$P)/$(call first_part,$P))
+RECENT_POSTINGS := $(wordlist 1,25,$(REV_POSTINGS))
 
 HTML_DIRS := html $(addprefix html/,$(AUTHORS))
 $(HTML_DIRS):
@@ -62,7 +62,7 @@ POSTINGS_HTML := $(foreach A,$(AUTHORS),$(addprefix html/$A/,$(POSTINGS($A))))
 
 # files to generate
 GENERATED_FILES := $(POSTINGS_HTML) \
-                   html/index html/base.css html/w3.css html/icon.ico \
+                   html/index html/archive html/base.css html/w3.css html/icon.ico \
                    html/rss html/RSS \
                    $(foreach A,$(AUTHORS),html/$A/author.png) \
                    $(foreach A,$(AUTHORS),html/$A/index) \
@@ -87,13 +87,16 @@ html/%: content/%.txt
 	$(GOSH) --style style/nice_date.gosh --style style/posting.gosh --top-path "../" \
 	        $(call gosh_metadata_args,$*) $< > $@
 
+# archive page depends on all postings
+html/archive: $(addprefix content/,$(addsuffix .txt,$(REV_POSTINGS)))
+
 # front page depends on the most recent postings
 html/index: $(addprefix content/,$(addsuffix .txt,$(RECENT_POSTINGS)))
 
 #
-# Front page with list of authors and summaries of the most recent postings
+# Front page and archive page with list of most recent authors and summaries of postings
 #
-html/index:
+html/index html/archive:
 	$(MSG)
 	cat style/front-header > $@
 	cat style/front-title >> $@
@@ -114,10 +117,12 @@ html/index:
 	echo "      <div id=\"posts\" class=\"w3-col x3\">" >> $@
 	echo "        <div id=\"post-list\">" >> $@
 	echo "          <ul>" >> $@
-	$(foreach P,$(RECENT_POSTINGS), \
+	$(foreach P,$(filter content/%.txt,$^), \
 	  $(GOSH) --style style/nice_date.gosh --style style/summary.gosh \
-	          $(call gosh_metadata_args,$P) content/$P.txt >> $@;)
+	      $(call gosh_metadata_args,$(P:content/%.txt=%)) $P >> $@;)
 	echo "          </ul>" >> $@
+	$(if $(filter %/index,$@), \
+	  echo "          <div><a href=\"archive#$(patsubst content/%.txt,%,$(lastword $^))\">more</a></div>" >> $@;)
 	echo "        </div> <!-- post-list -->" >> $@
 	echo "      </div> <!-- posts -->" >> $@
 	echo "      <div id=\"authors-small\" class=\"w3-col w3-hide-large\">" >> $@
@@ -139,7 +144,7 @@ html/index:
 html/rss:
 	$(MSG)
 	cat style/rss-header > $@
-	$(foreach P,$(RECENT_POSTINGS), \
+	$(foreach P,$(REV_POSTINGS), \
 	  $(GOSH) --style style/nice_date.gosh --style style/rss_item.gosh \
 	          $(call gosh_metadata_args,$P) content/$P.txt >> $@;)
 	cat style/rss-footer >> $@
