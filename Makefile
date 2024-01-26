@@ -39,6 +39,9 @@ second_part = $(notdir $1)
 author_name  = ${AUTHOR_NAME($(call first_part,$1))}
 author_flair = ${AUTHOR_FLAIR($(call first_part,$1))}
 
+# "grep" topics from an article
+topics = $(filter-out |,$(shell tail -n5 $(addprefix content/,$(addsuffix .txt,$1)) | sed -n '/^| /p'))
+
 # list of postings and authors sorted by date (most recent first) in the form <author>/<title>
 REV_POSTINGS := $(foreach P,\
                   $(call reverse,$(sort $(ALL_POSTINGS))),\
@@ -63,10 +66,15 @@ POSTINGS_HTML := $(foreach A,$(AUTHORS),$(addprefix html/$A/,$(POSTINGS($A))))
 # list of to-be-generated summary snippets
 SUMMARIES := $(foreach A,$(AUTHORS),$(addprefix html/summary/$A/,$(POSTINGS($A))))
 
+# acquire topics
+$(foreach P,$(REV_POSTINGS),$(foreach T,$(call topics,$P),$(eval TOPIC_POSTINGS($T) += $P)$(eval TOPICS += $T)))
+TOPICS := $(sort $(TOPICS))
+
 # files to generate
 GENERATED_FILES := $(POSTINGS_HTML) \
                    html/index html/archive html/base.css html/w3.css html/icon.ico \
                    html/rss html/RSS \
+                   html/topics \
                    $(foreach A,$(AUTHORS),html/$A/author.png) \
                    $(foreach A,$(AUTHORS),html/$A/index) \
                    $(foreach A,$(AUTHORS),html/$A/author) \
@@ -97,6 +105,25 @@ $(SUMMARIES): html/summary/%: $(addprefix content/,$(addsuffix .txt,%))
 	$(GOSH) --style style/nice_date.gosh --style style/summary.gosh \
 	  $(call gosh_metadata_args,$*) $< > $@;
 
+# generate topics snippet
+html/topics: $(foreach T,$(TOPICS),html/topics-$T)
+	$(MSG)
+	echo -e "      <div class=\"menu w3-col x1\">" \
+	        "        <div class=\"menu-inner\">\n" \
+	        "          <div class=\"menu-title\">Topics</div>\n" \
+	        "          <ul>" > $@
+	$(foreach T,$(TOPICS), \
+	  echo "<li><a href=\"topics-$T\">$T ($(words ${TOPIC_POSTINGS($T)}))</a></li>" >> $@;)
+	echo -e "          </ul>\n" \
+	        "        </div> <!-- menu-inner -->\n" \
+	        "      </div> <!-- menu -->" >> $@
+
+# make topic pages depend on article summaries
+$(foreach T,$(TOPICS),$(eval html/topics-$T: $(foreach P,${TOPIC_POSTINGS($T)},$(addprefix html/summary/,$P))))
+
+# front page depends on topics snippet
+html/index: html/topics
+
 # archive page depends on summary snippets
 html/archive: $(addprefix html/summary/,$(REV_POSTINGS))
 
@@ -106,7 +133,7 @@ html/index: $(addprefix html/summary/,$(RECENT_POSTINGS))
 #
 # Front page and archive page with list of most recent authors and summaries of postings
 #
-html/index html/archive:
+html/index html/archive $(addprefix html/topics-,$(TOPICS)):
 	$(MSG)
 	cat style/front-header \
 	    style/front-title > $@
@@ -146,8 +173,10 @@ html/index html/archive:
 	     "          </div> <!-- menu-inner -->\n" \
 	     "        </div> <!-- authors menu -->\n" \
 	     "      </div> <!-- authors-small -->" >> $@
-	cat style/external-links-menu \
-	    style/footer >> $@
+	cat style/external-links-menu >> $@
+	$(if $(filter-out html/topics-%,$@), \
+	  cat html/topics >> $@;)
+	cat style/footer >> $@
 
 html/rss:
 	$(MSG)
