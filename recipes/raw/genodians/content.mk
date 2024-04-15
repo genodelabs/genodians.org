@@ -42,12 +42,14 @@ define FETCHURL_CONFIG_HEAD
 		<vfs>
 			<dir name="dev">
 				<log/> <null/> <inline name="rtc">2000-01-01 00:00</inline>
-				<inline name="random">01234567890123456789</inline>
+				<inline name="random">0123456789012345678901234567890123456789</inline>
 			</dir>
 			<dir name="socket"> <lxip dhcp="yes"/> </dir>
+			<dir name="pipe"> <pipe/> </dir>
 			<dir name="download"> <fs/> </dir>
 		</vfs>
-		<libc stdout="/dev/log" stderr="/dev/log" rtc="/dev/rtc" socket="/socket"/>
+		<libc stdout="/dev/log" stderr="/dev/log" rtc="/dev/rtc" socket="/socket"
+		      pipe="/pipe"/>
 endef
 
 define FETCHURL_CONFIG_TAIL
