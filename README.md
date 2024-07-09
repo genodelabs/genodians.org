@@ -26,12 +26,12 @@ guidelines when participating:
   by any ad network.
 
 **Keep file names intact** It goes without saying that you are free to alter
-  your content after publishing, e.g., to correct typos or to incorporate
+  your content after publishing, e.g, to correct typos or to incorporate
   critique. It is your content after all. But in order to keep links from
   others to your existing postings intact, please reconsider the renaming of
   any files.
 
-Your content remains entirely your's. It will not be featured at genodians.org
+Your content remains entirely yours. It will not be featured at genodians.org
 without your consent. Vice versa, you are not entitled to be featured at
 genodians.org. Since genodians.org is operated by Genode Labs, please keep in
 mind that the aggregation of the content happens solely at the discretion of
@@ -49,7 +49,7 @@ All texts must be written using the GOSH syntax, which is documented at
 
 The first step is creating a new repository, which you may name `genodian`.
 Please add a `LICENSE` file to your repository that permits for the
-aggregation of your content, e.g., you may use the following snippet as a
+aggregation of your content, e.g, you may use the following snippet as a
 template
 
 ```sh
@@ -59,7 +59,7 @@ template
 ```
 
 The repository must contain an `author.txt` file, which tells a few words
-about you, e.g.,
+about you, e.g,
 
 - What is your background and relation to Genode?
 - What are your technical interests?
@@ -109,7 +109,7 @@ works) before publishing it.
 Please open an [issue](https://github.com/genodelabs/genodians.org) and
 provide the following information:
 
-- A link to your content (i.e., a GitHub project). The content should already
+- A link to your content (i.e, a GitHub project). The content should already
   contain at least one posting to give an impression of you as author.
 
 - Your real name. It will be displayed aside your articles. Pseudonyms are not
@@ -121,11 +121,11 @@ provide the following information:
 For each author, there exists a subdirectory under `authors/`. It contains the
 following files:
 
-:_name_: Real-world name
+`name` Real-world name
 
-:_zip_url_: URL to the author's content as zip file
+`zip_url` URL to the author's content as zip file
 
-:_flair_: Hint about the role within the community (to be assigned by the
+`flair` Hint about the role within the community (to be assigned by the
   operator of genodians.org)
 
 The genodians.org website fetches the content from all authors in periodic
@@ -142,7 +142,6 @@ $ git clone https://github.com/genodelabs/genodians.org.git
 $ cd genodians.org
 ```
 
-
  Fetch the required sub module(s)
 
 ```sh
@@ -156,7 +155,7 @@ $ git submodule update --init --recursive
 with the files mentioned above.
 
 Add your content to the `content/<your-username>/` subdirectory where 
-`<your-username>` corresponds to your identity, e.g., your GitHub username.
+`<your-username>` corresponds to your identity, e.g, your GitHub username.
 
   As a convenient practice, you may clone your content repository directly to
   this directory. For example, to incorporate nfeske's content, you may clone
