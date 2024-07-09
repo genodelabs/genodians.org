@@ -68,7 +68,7 @@ about you, e.g,
 
 Furthermore, the repository must contain an `author.png` file with an image
 (128x128 pixels) of you or your avatar. Both the information in the
-_author.txt_ file and the image will be displayed alongside your postings,
+`author.txt` file and the image will be displayed alongside your postings,
 highlighting your authorship.
 
 Each posting is a file named `YYYY-MM-DD-title-on-the-posting.txt` where
@@ -149,10 +149,7 @@ $ git submodule update --init --recursive
 ```
  Make sure that you have Tcl installed (needed by the GOSH tool).
 
- Create a directory at 
-
-`authors/<your-username>/`
-with the files mentioned above.
+ Create a directory at `authors/<your-username>/` with the files mentioned above.
 
 Add your content to the `content/<your-username>/` subdirectory where 
 `<your-username>` corresponds to your identity, e.g, your GitHub username.
@@ -170,7 +167,7 @@ $ git clone https://github.com/nfeske/genodian content/nfeske
 $ make
 ```
 
- Once finished, you may view the generated pages via your web browser, e.g.,
+ Once finished, you may view the generated pages via your web browser, e.g,
 
 ```sh
 $ firefox ./html/index
