@@ -153,7 +153,7 @@ steps:
  Create a directory at 
 
 ```sh
-authors/<your-username/
+authors/<your-username>/
 ```
 with the files mentioned above.
 
