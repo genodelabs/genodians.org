@@ -1,5 +1,5 @@
 <p align="center">
-<img alt="Genode-Logo" width="400" src="https://genodians.org/site_title.png">
+<img alt="Genode-Logo" width="350" src="https://genodians.org/site_title.png">
 </p>
 
 [Genodians.org](https://genodians.org) is a community site for the Genode OS 
@@ -16,16 +16,16 @@ from this repository, under the control of the respective author.
 Genodians.org welcomes you as an author! Please consider the following
 guidelines when participating:
 
-:Stay on topic: Please keep in mind that genodians.org is a site about
+**Stay on topic** Please keep in mind that genodians.org is a site about
   Genode. Your content should draw a connection to this topic.
 
-:Civil articulation: Don't misuse genodians.org for political rumblings or
+**Civil articulation** Don't misuse genodians.org for political rumblings or
   unconstructive rants. Keep up a friendly and inviting tone.
 
-:No ads: Genodians.org is an ad-free zone. Don't pollute it with ads served
+**No ads** Genodians.org is an ad-free zone. Don't pollute it with ads served
   by any ad network.
 
-:Keep file names intact: It goes without saying that you are free to alter
+**Keep file names intact** It goes without saying that you are free to alter
   your content after publishing, e.g., to correct typos or to incorporate
   critique. It is your content after all. But in order to keep links from
   others to your existing postings intact, please reconsider the renaming of
