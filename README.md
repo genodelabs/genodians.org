@@ -47,8 +47,8 @@ as an example.
 All texts must be written using the GOSH syntax, which is documented at
 [https://github.com/nfeske/gosh].
 
-The first step is creating a new repository, which you may name "genodian".
-Please add a _LICENSE_ file to your repository that permits for the
+The first step is creating a new repository, which you may name `genodian`.
+Please add a `LICENSE` file to your repository that permits for the
 aggregation of your content, e.g., you may use the following snippet as a
 template
 
@@ -58,7 +58,7 @@ template
  http://creativecommons.org/licenses/by-sa/4.0/legalcode
 ```
 
-The repository must contain an _author.txt_ file, which tells a few words
+The repository must contain an `author.txt` file, which tells a few words
 about you, e.g.,
 
 - What is your background and relation to Genode?
@@ -66,13 +66,13 @@ about you, e.g.,
 - How to contact you?
 - Links to your projects, if there are any
 
-Furthermore, the repository must contain an _author.png_ file with an image
+Furthermore, the repository must contain an `author.png` file with an image
 (128x128 pixels) of you or your avatar. Both the information in the
 _author.txt_ file and the image will be displayed alongside your postings,
 highlighting your authorship.
 
-Each posting is a file named _YYYY-MM-DD-title-on-the-posting.txt_ where
-_YYYY_ is the year, _MM_ the month, and _DD_ the day of month. As the title
+Each posting is a file named `YYYY-MM-DD-title-on-the-posting.txt` where
+`YYYY` is the year, `MM` the month, and `DD` the day of month. As the title
 will be used for posting's URL, keep it as concise and expressive as possible.
 
 
@@ -89,14 +89,14 @@ will be used for posting's URL, keep it as concise and expressive as possible.
 
 - Within a posting, please avoid using GOSH's document-structuring features
   (chapters, sections) except for named paragraphs. A named paragraph is a
-  line of text underlined with '---' characters, which is useful to structure
+  line of text underlined with `---` characters, which is useful to structure
   a larger posting into multiple sections.
 
 - For code examples, please keep in mind that the site layout provides a
   horizontally limited content column, which fits approximately 70 monospace
   characters.
 
-- If your posting contains quotes, consider using GOSH's markup for _italic_
+- If your posting contains quotes, consider using GOSH's markup for ***italic***
   text by prefixing and suffixing each line of the quote with underscore
   characters. This way, quotes nicely stand out from your own text.
 
@@ -118,7 +118,7 @@ provide the following information:
 
 ## Test driving the static site generator
 
-For each author, there exists a subdirectory under _authors/_. It contains the
+For each author, there exists a subdirectory under `authors/`. It contains the
 following files:
 
 :_name_: Real-world name
@@ -137,53 +137,42 @@ steps:
  Clone the genodians.org repository
 
 ```sh
-   $ git clone https://github.com/genodelabs/genodians.org.git
+$ git clone https://github.com/genodelabs/genodians.org.git
 
-   $ cd genodians.org
+$ cd genodians.org
 ```
 
 
  Fetch the required sub module(s)
 
 ```sh
-   $ git submodule update --init --recursive
+$ git submodule update --init --recursive
 ```
  Make sure that you have Tcl installed (needed by the GOSH tool).
 
  Create a directory at 
 
-```sh
-authors/<your-username>/
-```
+`authors/<your-username>/`
 with the files mentioned above.
 
-Add your content to the 
-
-```sh
-content/<your-username>/ 
-```
-subdirectory where
-
-```sh
-<your-username>
-``` 
-corresponds to your identity, e.g., your GitHub username.
+Add your content to the `content/<your-username>/` subdirectory where 
+`<your-username>` corresponds to your identity, e.g., your GitHub username.
 
   As a convenient practice, you may clone your content repository directly to
   this directory. For example, to incorporate nfeske's content, you may clone
   his genodian repository as follows
 
 ```sh
-  $ git clone https://github.com/nfeske/genodian content/nfeske
+$ git clone https://github.com/nfeske/genodian content/nfeske
 ```
  Generate the static HTML pages:
 
 ```sh
-   $ make
+$ make
 ```
 
  Once finished, you may view the generated pages via your web browser, e.g.,
 
 ```sh
-   $ firefox ./html/index
+$ firefox ./html/index
 ```
