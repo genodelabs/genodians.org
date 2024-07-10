@@ -13,8 +13,8 @@ from this repository, under the control of the respective author.
 
 ## Participation
 
-Genodians.org welcomes you as an author! Please consider the following
-guidelines when participating:
+[Genodians.org](https://genodians.org) welcomes you as an author! 
+Please consider the following guidelines when participating:
 
 **Stay on topic** Please keep in mind that genodians.org is a site about
   Genode. Your content should draw a connection to this topic.
