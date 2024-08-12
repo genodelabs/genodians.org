@@ -3,6 +3,7 @@
           <div class="menu-title">External Links</div>
           <ul>
             <li><a href="https://genode.org">Genode OS project</a></li>
+            <li><a href="https://genode.discourse.group">Community forum</a></li>
             <li><a href="https://github.com/genodelabs/genode">Genode at GitHub</a></li>
             <li><a href="https://github.com/genodelabs/genodians.org">Join genodians.org</a></li>
             <li><a href="https://old.reddit.com/r/genode/">Discuss at reddit</a></li>
