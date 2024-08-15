@@ -74,7 +74,7 @@ install_config {
 	</start>
 
 	<start name="genodians" caps="5000" priority="-1">
-		<resource name="RAM" quantum="512M"/>
+		<resource name="RAM" quantum="768M"/>
 		<binary name="init"/>
 		<provides> <service name="Uplink"/> </provides>
 		<route>
