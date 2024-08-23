@@ -70,7 +70,7 @@ extract.config:
 	   echo '$(subst $(NEWLINE),\n,$(EXTRACT_CONFIG_TAIL))'; ) > $@;
 
 define EXTRACT_CONFIG_HEAD
-	<config verbose="yes">
+	<config verbose="yes" ignore_failures="yes" stop_on_failure="no">
 		<libc stdout="/dev/log" stderr="/dev/log" rtc="/dev/null"
 		      update_mtime="no"/>
 		<vfs>
