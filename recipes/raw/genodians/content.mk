@@ -1,4 +1,4 @@
-RAW_FILES := genodians.config nic_router.config import.config \
+RAW_FILES := genodians.config nic_router.config \
              lighttpd.conf wipe.config generate.config
 
 content: $(RAW_FILES)

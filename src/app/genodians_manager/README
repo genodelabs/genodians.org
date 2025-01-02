@@ -1,0 +1,83 @@
+This directory contains the implementation of the Genodians management
+component. It is used to manage the various sub-systems of the appliance
+like the web-server and import mechanism by monitoring the state of each
+sub-init and producing sub-init configurations.
+
+
+Configuration
+~~~~~~~~~~~~~
+
+The manager can be configured by the following attributes in the
+'config' node:
+
+* :status_update_interval_sec: sets the time interval in seconds in
+  which the status page is updated.
+
+The resources of the various sub-systems can be configured by their
+corresponding node in the configuration.
+
+The 'lighttpd' node also features the following valid attributes:
+
+* :ram: sets the initial ram quota.
+
+* :caps: sets the initial cap quota.
+
+* :heartbeat_ms: sets the time interval for heartbeat checks in
+  milliseconds.
+
+The 'import' node has the following attributes:
+
+* :update_interval_min: sets the time interval in minutes that the
+                        import mechanism waits between updates.
+
+* :heartbeat_ms: sets the time interval for heartbeat checks in
+                 milliseconds.
+
+It also contains a list of steps that are performed in a fixed order
+where each of them features the following attributes:
+
+* :ram: sets the initial ram quota.
+
+* :caps: sets the initial cap quota.
+
+The following list shows the fixed order and describes each step:
+
+* :fetchurl: downloads the archive file of every author.
+
+* :wipe: removes all files from the file system targeted by the
+         following step.
+
+* :extract: extracts all downloaded archives.
+
+* :generate: generates the actual website from the files extracted
+             in the previous step.
+
+The configuration of each step is provided by a ROM named after
+the step, e.g. 'fetchurl.config', and generated at build-time.
+
+The following exemplary configuration illustrates how the manager is
+currently integrated:
+
+!<start name="genodians_manager" caps="100">
+!  <resource name="RAM" quantum="8M"/>
+!  <config status_update_interval_sec="60">
+!    <lighttpd ram="64M" caps="300" heartbeat_ms="5000"/>
+!    <import update_interval_min="180" heartbeat_ms="3000">
+!      <fetchurl ram="48M" caps="300"/>
+!      <wipe     ram="48M" caps="1000"/>
+!      <extract  ram="48M" caps="300"/>
+!      <generate ram="64M" caps="1500"/>
+!    </import>
+!  </config>
+!  <route>
+!    <service name="ROM" label="fullchain.pem">    <child name="manager_report_rom"/> </service>
+!    <service name="ROM" label="import.state">     <child name="manager_report_rom"/> </service>
+!    <service name="ROM" label="lighttpd.state">   <child name="manager_report_rom"/> </service>
+!    <service name="ROM" label="nic_router.state"> <child name="manager_report_rom"/> </service>
+!    <service name="Report" label="status.html">   <child name="manager_fs_report"/> </service>
+!    <service name="Report">                       <child name="manager_report_rom"/> </service>
+!    <any-service> <parent/> </any-service>
+!  </route>
+!</start>
+
+For the whole picture please take a look at 'receipes/raw/genodians.config'.

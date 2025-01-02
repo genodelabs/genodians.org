@@ -15,7 +15,6 @@
 		<rom label="fetchurl.config"/>
 		<rom label="genodians.config"/>
 		<rom label="genodians.tar"/>
-		<rom label="import.config"/>
 		<rom label="init"/>
 		<rom label="libarchive.lib.so"/>
 		<rom label="libc.lib.so"/>
