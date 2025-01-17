@@ -9,6 +9,7 @@ import_from_depot [depot_user]/src/[base_src] \
                   [depot_user]/src/vfs_import \
                   [depot_user]/src/vfs_jitterentropy \
                   [depot_user]/src/fs_report \
+                  [depot_user]/src/fs_query \
                   [depot_user]/src/report_rom
 
 install_config {
@@ -106,8 +107,19 @@ if {[expr ![file exists bin/privkey.pem] || ![file exists bin/fullchain.pem]]} {
 	exit 0
 }
 
+if {[catch {set size [file size bin/upload-user.conf]}] || $size < 69} {
+	puts "You may provide bin/upload-user.conf to permit uploading to lighttpd"
+	puts "in htdigest sha-256 format, for example, created like follows."
+	puts ""
+	puts " echo user:upload:\$(echo -n user:upload:passw0rd | sha256sum | head -c 64) > bin/upload-user.conf"
+
+	set fh [open bin/upload-user.conf w]
+	puts $fh "# empty"
+	close $fh
+}
+
 build { app/genodians_manager }
-build_boot_image [list {*}[build_artifacts] fullchain.pem privkey.pem ]
+build_boot_image [list {*}[build_artifacts] fullchain.pem privkey.pem upload-user.conf ]
 
 append qemu_args " -m 1000 "
 append qemu_args " -netdev user,id=net0,hostfwd=tcp::5555-:80,hostfwd=tcp::5556-:443 "

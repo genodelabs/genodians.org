@@ -179,6 +179,20 @@ namespace Sculpt {
 			fn(xml); });
 	}
 
+	void gen_symlink(Xml_generator &xml, char const *name, char const *target)
+	{
+		xml.node("symlink", [&] {
+			xml.attribute("name", name);
+			xml.attribute("target", target); });
+	}
+
+	void gen_rom(Xml_generator &xml, char const *name)
+	{
+		xml.node("rom", [&] {
+			xml.attribute("name", name);
+			xml.attribute("binary", "no"); });
+	}
+
 	void gen_heartbeat_node(Xml_generator &xml, unsigned rate_ms) {
 		xml.node("heartbeat", [&] { xml.attribute("rate_ms", rate_ms); }); }
 } /* namespace Sculpt */
@@ -1123,13 +1137,22 @@ void Genodians::Lighttpd::_update_init_config(Xml_generator &xml)
 
 				gen_named_dir(xml, "etc", [&] (Xml_generator &xml) {
 					gen_named_dir(xml, "lighttpd", [&] (Xml_generator &xml) {
-						xml.node("rom", [&] {
-							xml.attribute("name", "lighttpd.conf");
-							xml.attribute("binary", "no"); });
+						gen_rom(xml, "lighttpd.conf");
+						gen_rom(xml, "upload-user.conf");
 						xml.node("fs", [&] { xml.attribute("label", "cert"); }); }); });
 
 				gen_named_dir(xml, "website", [&] (Xml_generator &xml) {
-					xml.node("fs", [&] { xml.attribute("label", "website"); }); }); });
+					gen_named_dir(xml, ".well-known", [&] (Xml_generator &xml) {
+						gen_symlink(xml, "acme-challenge", "/upload/acme-challenge"); });
+					gen_symlink(xml, "upload", "/upload");
+					xml.node("fs", [&] { xml.attribute("label", "website"); }); });
+
+				gen_named_dir(xml, "upload", [&] (Xml_generator &xml) {
+					gen_symlink(xml, "cert", "/etc/lighttpd/public");
+					gen_named_dir(xml, "acme-challenge", [] (Xml_generator &xml) {
+						xml.node("ram"); }); });
+
+			});
 
 			xml.node("libc", [&] {
 				xml.attribute("stdin",  "/dev/null");
@@ -1181,6 +1204,18 @@ struct Genodians::Main
 
 	Lighttpd _lighttpd;
 	Import   _import;
+
+	Attached_rom_dataspace _fullchain_rom {
+		_env, "fullchain.pem" };
+
+	Signal_handler<Main> _fullchain_rom_sigh {
+		_env.ep(), *this, &Main::_handle_fullchain_update };
+
+	void _handle_fullchain_update()
+	{
+		log("Certificate updated, restart lighttpd");
+		_lighttpd.trigger_restart();
+	}
 
 	Expanding_reporter _status_reporter {
 		_env, "html", "status.html" };
@@ -1327,6 +1362,8 @@ struct Genodians::Main
 		                         _config.import_config },
 		_nic_router_state_rom { _env, "nic_router.state" }
 	{
+		_fullchain_rom.sigh(_fullchain_rom_sigh);
+
 		/* trigger initial status report */
 		_handle_status();
 	}
