@@ -93,17 +93,17 @@ install_config {
 </config>}
 
 
-if {![file exists bin/example.pem]} {
-	puts "Certificate 'example.pem' missing. Please execute"
+if {[expr ![file exists bin/privkey.pem] || ![file exists bin/fullchain.pem]]} {
+	puts "Certificate chain 'fullchain.pem' or private key 'privkey.pem' missing. Please execute"
 	puts ""
-	puts " openssl req -new -x509 -keyout bin/example.pem -out bin/example.pem -days 365 -nodes"
+	puts " openssl req -new -x509 -keyout bin/privkey.pem -out bin/fullchain.pem -days 365 -nodes"
 	puts ""
-	puts "and copy the resulting file to bin or provide your own examplary file."
+	puts "or provide your own files in bin/fullchain.pem resp. bin/privkey.pem."
 	puts ""
 	exit 0
 }
 
-build_boot_image { example.pem }
+build_boot_image [list {*}[build_artifacts] fullchain.pem privkey.pem ]
 
 append qemu_args " -m 1000 "
 append qemu_args " -netdev user,id=net0,hostfwd=tcp::5555-:80,hostfwd=tcp::5556-:443 "
