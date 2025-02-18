@@ -864,6 +864,7 @@ void Genodians::Import::state_update(Xml_node const &state_node,
 	{
 		new_state = _sleep_timeout_triggered ? State::INIT
 		                                     : State::SLEEP;
+		_sleep_timeout_triggered = false;
 		break;
 	}
 	} /* switch */
