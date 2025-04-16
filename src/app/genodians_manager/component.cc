@@ -275,8 +275,7 @@ namespace Genodians {
 		                              auto const &missing_fn) const
 		{
 			if (_cached_state_report.constructed())
-				_cached_state_report->with_xml_node(
-					[&] (Xml_node const &node) { avail_fn(node); });
+				avail_fn(_cached_state_report->xml);
 			else
 				missing_fn();
 		}
