@@ -47,7 +47,7 @@ define FETCHURL_CONFIG_HEAD
 			</dir>
 			<dir name="socket"> <lxip dhcp="yes"/> </dir>
 			<dir name="pipe"> <pipe/> </dir>
-			<dir name="download"> <fs/> </dir>
+			<dir name="download"> <fs label="download"/> </dir>
 		</vfs>
 		<libc stdout="/dev/log" stderr="/dev/log" rtc="/dev/rtc" socket="/socket"
 		      pipe="/pipe"/>
