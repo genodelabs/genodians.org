@@ -1212,6 +1212,15 @@ struct Genodians::Main
 	Lighttpd _lighttpd;
 	Import   _import;
 
+	Timer::One_shot_timeout<Main> _fullchain_update_timeout {
+		_timer, *this, &Main::_handle_fullchain_update_timeout };
+
+	void _handle_fullchain_update_timeout(Duration)
+	{
+		log("Certificate updated, restart lighttpd");
+		_lighttpd.trigger_restart();
+	}
+
 	Attached_rom_dataspace _fullchain_rom {
 		_env, "fullchain.pem" };
 
@@ -1220,8 +1229,21 @@ struct Genodians::Main
 
 	void _handle_fullchain_update()
 	{
-		log("Certificate updated, restart lighttpd");
-		_lighttpd.trigger_restart();
+		/*
+		 * The 'fullchain.pem' file is at the moment monitored via
+		 * the fs_query component that watches for changes in the
+		 * 'public' directory. The interaction of lighttpd with
+		 * this directory during uploads can generate multiple
+		 * reports and at the some time restarting lighttpd at the
+		 * wrong time can lead to prematurely cutting the connection
+		 * while the remote side is still waiting for an response.
+		 *
+		 * To mitigate this situation defer the restart of lighttpd
+		 * by some seconds.
+		 */
+		Microseconds const schedule_restart = Microseconds {
+			1'000'000ull * 5 };
+		_fullchain_update_timeout.schedule(schedule_restart);
 	}
 
 	Expanding_reporter _status_reporter {
