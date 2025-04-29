@@ -627,10 +627,10 @@ struct Genodians::Import : Genodians::Managed_init
 	Constructible<Extract>  _extract  { };
 	Constructible<Generate> _generate { };
 
-	Seconds _last_fetch_duration    { 0 };
-	Seconds _last_wipe_duration     { 0 };
-	Seconds _last_extract_duration  { 0 };
-	Seconds _last_generate_duration { 0 };
+	Seconds _last_fetch_duration    {  60u };
+	Seconds _last_wipe_duration     {  15u };
+	Seconds _last_extract_duration  {  15u };
+	Seconds _last_generate_duration { 180u };
 
 	/*
 	 * Step timeout handling
