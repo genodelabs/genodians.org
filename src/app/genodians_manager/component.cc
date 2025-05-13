@@ -1358,6 +1358,54 @@ struct Genodians::Main
 
 	Status_notifier _status_notifier { _status_sigh };
 
+	Rom_handler<Main> _fetch_lighttpd_handler;
+
+	void _handle_fetch_lighttpd(Xml_node const &node)
+	{
+		static constexpr unsigned MAX_CHECKS = 3;
+		static unsigned check_count = 0;
+
+		/* inhibit check when we have not yet imported anything */
+		if (!_import._imports) {
+			log("Inhibit lighttpd check");
+			return;
+		}
+
+		auto check_progress = [&] (Xml_node const &fetch_node) {
+			/* ignore transient reports */
+			if (!fetch_node.attribute_value("finished", false))
+				return;
+
+			using Result = String<16>;
+
+			Result const result = fetch_node.attribute_value("result", Result());
+			/* never happens */
+			if (!result.valid())
+				return;
+
+			if (result == "failed")
+				++check_count;
+			else if (result == "success")
+				check_count = 0;
+
+			if (check_count) {
+				log("Lighttpd check already failed ", check_count, " times");
+
+				_nic_router_state_rom.with_xml([&] (Xml_node const &node) {
+					log(node);
+				});
+			}
+
+			if (check_count >= MAX_CHECKS) {
+				/* XXX consider certificate update */
+				log("Restart lighttpd as the check failed repeatedly");
+				_lighttpd.trigger_restart();
+				check_count = 0;
+			}
+		};
+		node.with_optional_sub_node("fetch", check_progress);
+	}
+
 	Main(Env &env)
 	:
 		_env      { env },
@@ -1368,7 +1416,9 @@ struct Genodians::Main
 		                         _config.lighttpd_config },
 		_import   { _env, _heap, _status_notifier, _timer, _rtc,
 		                         _config.import_config },
-		_nic_router_state_rom { _env, "nic_router.state" }
+		_nic_router_state_rom { _env, "nic_router.state" },
+		_fetch_lighttpd_handler { _env, "fetch_lighttpd.report", *this,
+		                          &Main::_handle_fetch_lighttpd }
 	{
 		_fullchain_rom.sigh(_fullchain_rom_sigh);
 
