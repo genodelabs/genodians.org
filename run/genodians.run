@@ -58,10 +58,9 @@ install_config {
 	</start>
 
 
-	<start name="drivers" caps="1000" managing_system="yes">
+	<start name="drivers" caps="1100" managing_system="yes" priority="-1">
 		<resource name="RAM" quantum="32M"/>
 		<binary name="init"/>
-		<provides> <service name="Nic"/> </provides>
 		<route>
 			<service name="ROM" label="config"> <parent label="drivers.config"/> </service>
 			<service name="IO_MEM">  <parent/> </service>
