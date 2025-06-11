@@ -8,6 +8,7 @@ import_from_depot [depot_user]/src/[base_src] \
                   [depot_user]/pkg/system_rtc-[board] \
                   [depot_user]/src/vfs_import \
                   [depot_user]/src/vfs_jitterentropy \
+                  [depot_user]/src/vfs_xoroshiro \
                   [depot_user]/src/fs_report \
                   [depot_user]/src/fs_query \
                   [depot_user]/src/black_hole \

@@ -42,7 +42,8 @@ define FETCHURL_CONFIG_HEAD
 		<vfs>
 			<dir name="dev">
 				<log/> <null/> <inline name="rtc">2000-01-01 00:00</inline>
-				<inline name="random">0123456789012345678901234567890123456789</inline>
+				<jitterentropy name="entropy"/>
+				<xoroshiro name="random" seed_path="/dev/entropy"/>
 			</dir>
 			<dir name="socket"> <lxip dhcp="yes"/> </dir>
 			<dir name="pipe"> <pipe/> </dir>
