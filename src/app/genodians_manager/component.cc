@@ -1350,6 +1350,8 @@ struct Genodians::Main
 
 			xml.node("body", [&] {
 
+				xml.attribute("style", "font-family:monospace");
+
 				_generate_report(xml);
 
 				_lighttpd.generate_report(xml);
