@@ -153,48 +153,48 @@ void Utils::Html::gen_table_key_value_row(Xml_generator &xml, Utils::Html::Strin
  * Extend helper utilities from Sculpt
  */
 namespace Sculpt {
-	void gen_default_route_parent(Xml_generator &xml)
+	void gen_default_route_parent(Generator &g)
 	{
-		xml.node("default-route", [&] {
-			xml.node("any-service", [&] {
-				xml.node("parent", [&] { }); }); });
+		g.node("default-route", [&] {
+			g.node("any-service", [&] {
+				g.node("parent", [&] { }); }); });
 	}
 
-	void gen_common_parent_routes(Xml_generator &xml)
+	void gen_common_parent_routes(Generator &g)
 	{
-		gen_service_node<Rom_session>(xml, [&] { xml.node("parent", [&] {}); });
-		gen_service_node<Cpu_session>(xml, [&] { xml.node("parent", [&] {}); });
-		gen_service_node<Pd_session> (xml, [&] { xml.node("parent", [&] {}); });
-		gen_service_node<Rm_session> (xml, [&] { xml.node("parent", [&] {}); });
-		gen_service_node<Log_session>(xml, [&] { xml.node("parent", [&] {}); });
+		gen_service_node<Rom_session>(g, [&] { g.node("parent", [&] {}); });
+		gen_service_node<Cpu_session>(g, [&] { g.node("parent", [&] {}); });
+		gen_service_node<Pd_session> (g, [&] { g.node("parent", [&] {}); });
+		gen_service_node<Rm_session> (g, [&] { g.node("parent", [&] {}); });
+		gen_service_node<Log_session>(g, [&] { g.node("parent", [&] {}); });
 	}
 
-	void gen_arg(Xml_generator &xml, auto const &arg) {
-		xml.node("arg", [&] { xml.attribute("value", arg); }); }
+	void gen_arg(Generator &g, auto const &arg) {
+		g.node("arg", [&] { g.attribute("value", arg); }); }
 
-	void gen_named_dir(Xml_generator &xml, char const *name, auto const &fn)
+	void gen_named_dir(Generator &g, char const *name, auto const &fn)
 	{
-		xml.node("dir", [&] {
-			xml.attribute("name", name);
-			fn(xml); });
+		g.node("dir", [&] {
+			g.attribute("name", name);
+			fn(g); });
 	}
 
-	void gen_symlink(Xml_generator &xml, char const *name, char const *target)
+	void gen_symlink(Generator &g, char const *name, char const *target)
 	{
-		xml.node("symlink", [&] {
-			xml.attribute("name", name);
-			xml.attribute("target", target); });
+		g.node("symlink", [&] {
+			g.attribute("name", name);
+			g.attribute("target", target); });
 	}
 
-	void gen_rom(Xml_generator &xml, char const *name)
+	void gen_rom(Generator &g, char const *name)
 	{
-		xml.node("rom", [&] {
-			xml.attribute("name", name);
-			xml.attribute("binary", "no"); });
+		g.node("rom", [&] {
+			g.attribute("name", name);
+			g.attribute("binary", "no"); });
 	}
 
-	void gen_heartbeat_node(Xml_generator &xml, unsigned rate_ms) {
-		xml.node("heartbeat", [&] { xml.attribute("rate_ms", rate_ms); }); }
+	void gen_heartbeat_node(Generator &g, unsigned rate_ms) {
+		g.node("heartbeat", [&] { g.attribute("rate_ms", rate_ms); }); }
 } /* namespace Sculpt */
 
 
@@ -221,11 +221,11 @@ namespace Genodians {
 		using Child_state_registery = Registry<Child_state>;
 		Child_state_registery child_states { };
 
-		bool _evalute_child_states(Xml_node const &state)
+		bool _evalute_child_states(Node const &state)
 		{
 			/* upgrade RAM and cap quota on demand */
 			bool reconfigure = false;
-			state.for_each_sub_node("child", [&] (Xml_node child) {
+			state.for_each_sub_node("child", [&] (Node const &child) {
 				bool reconfiguration_needed = false;
 				child_states.for_each([&] (Child_state &child_state) {
 					if (child_state.apply_child_state_report(child))
@@ -236,9 +236,9 @@ namespace Genodians {
 			return reconfigure;
 		}
 
-		Constructible<Buffered_xml> _cached_state_report { };
+		Constructible<Buffered_node> _cached_state_report { };
 
-		bool _update_cached_state_report(Xml_node const &node)
+		bool _update_cached_state_report(Node const &node)
 		{
 			_cached_state_report.construct(_alloc, node);
 			return true;
@@ -246,7 +246,7 @@ namespace Genodians {
 
 		Rom_handler<Managed_init> _state_rom;
 
-		void _state_update(Xml_node const &node) {
+		void _state_update(Node const &node) {
 
 			if (Managed_init::_update_cached_state_report(node))
 				_state_change_notifier.notify();
@@ -267,15 +267,15 @@ namespace Genodians {
 
 		void generate_config(auto const &fn)
 		{
-			_config_reporter.generate([&] (Xml_generator &xml) {
-				fn(xml); });
+			_config_reporter.generate([&] (Generator &g) {
+				fn(g); });
 		}
 
 		void with_cached_state_report(auto const &avail_fn,
 		                              auto const &missing_fn) const
 		{
 			if (_cached_state_report.constructed())
-				avail_fn(_cached_state_report->xml);
+				avail_fn(*_cached_state_report);
 			else
 				missing_fn();
 		}
@@ -284,8 +284,8 @@ namespace Genodians {
 		 ** Managed_init interface **
 		 ****************************/
 
-		virtual void generate_report(Xml_generator &)        const = 0;
-		virtual void state_update   (Xml_node const &, bool)       = 0;
+		virtual void generate_report(Xml_generator &)    const = 0;
+		virtual void state_update   (Node const &, bool)       = 0;
 	};
 
 	struct Import;
@@ -315,7 +315,7 @@ namespace Genodians {
 
 		virtual ~Managed_child() { }
 
-		Result check(Xml_node const &state_node)
+		Result check(Node const &state_node)
 		{
 			Child_exit_state const exit_state(state_node, name());
 
@@ -330,8 +330,8 @@ namespace Genodians {
 			return Ok { .finished = true };
 		}
 
-		void gen_start_node_content(Xml_generator &xml) const {
-			_child_state.gen_start_node_content(xml); }
+		void gen_start_node_content(Generator &g) const {
+			_child_state.gen_start_node_content(g); }
 
 		void trigger_restart() {
 			_child_state.trigger_restart(); }
@@ -343,24 +343,13 @@ namespace Genodians {
 		 ** Managed_child interface **
 		 *****************************/
 
-		virtual void  generate(Xml_generator &xml) const = 0;
+		virtual void  generate(Generator &g) const = 0;
 	};
 
 	struct Fetch;
 	struct Wipe;
 	struct Extract;
 	struct Generate;
-
-	auto with_sub_node(Xml_node const &node,
-	                   char     const *sub_node_name,
-	                   auto     const &fn)
-	{
-		if (node.has_sub_node(sub_node_name))
-			return fn(node.sub_node(sub_node_name));
-
-		static Xml_node const empty_node("<empty/>");
-		return fn(empty_node);
-	}
 
 	struct Config
 	{
@@ -369,7 +358,7 @@ namespace Genodians {
 			Ram_quota ram;
 			Cap_quota caps;
 
-			static Child from_xml(Xml_node const &node)
+			static Child from_node(Node const &node)
 			{
 				return Child {
 					.ram = Ram_quota {
@@ -401,39 +390,56 @@ namespace Genodians {
 		Lighttpd lighttpd_config;
 		Import   import_config;
 
-		static Config update_from_xml(Xml_node const &config_node)
+		static Config update_from_node(Node const &config_node)
 		{
 			unsigned const status_update_interval =
 				config_node.attribute_value("status_update_interval_sec", 60u);
 
-			Xml_node const &lighttpd_node =
-				config_node.has_sub_node("lighttpd") ? config_node.sub_node("import")
-			                                         : Xml_node("<empty/>");
 			Child const lighttpd =
-				with_sub_node(config_node, "lighttpd", [&] (Xml_node const &node) {
-					return Child::from_xml(node); });
+				config_node.with_sub_node("lighttpd",
+					[&] (Node const &node) { return Child::from_node(node); },
+					[&]                    { return Child::from_node(Node()); });
 			unsigned const lighttpd_heartbeat_ms =
-				lighttpd_node.attribute_value("heartbeat_ms", 3000u);
+				config_node.with_sub_node("lighttpd",
+					[&] (Node const &node) { return node.attribute_value("heartbeat_ms", 3000u); },
+					[&]                    { return 3000u; });
 
-			Xml_node const &import_node =
-				config_node.has_sub_node("import") ? config_node.sub_node("import")
-			                                       : Xml_node("<empty/>");
-			unsigned const import_heartbeat_ms =
-				import_node.attribute_value("heartbeat_ms", 3000u);
-			unsigned const sleep_duration =
-				import_node.attribute_value("update_interval_min", 180u);
-			Child const fetchurl =
-				with_sub_node(import_node, "fetchurl", [&] (Xml_node const &node) {
-					return Child::from_xml(node); });
-			Child const wipe =
-				with_sub_node(import_node, "wipe", [&] (Xml_node const &node) {
-					return Child::from_xml(node); });
-			Child const extract =
-				with_sub_node(import_node, "extract", [&] (Xml_node const &node) {
-					return Child::from_xml(node); });
-			Child const generate =
-				with_sub_node(import_node, "generate", [&] (Xml_node const &node) {
-					return Child::from_xml(node); });
+			Import const import_config =
+				config_node.with_sub_node("import",
+					[&] (Node const &node) {
+
+						unsigned const import_heartbeat_ms =
+							node.attribute_value("heartbeat_ms", 3000u);
+						unsigned const sleep_duration =
+							node.attribute_value("update_interval_min", 180u);
+
+						Child const fetchurl =
+							node.with_sub_node("fetchurl",
+								[&] (Node const &node) { return Child::from_node(node); },
+								[&]                    { return Child::from_node(Node()); });
+						Child const wipe =
+							node.with_sub_node("wipe",
+								[&] (Node const &node) { return Child::from_node(node); },
+								[&]                    { return Child::from_node(Node()); });
+						Child const extract =
+							node.with_sub_node("extract",
+								[&] (Node const &node) { return Child::from_node(node); },
+								[&]                    { return Child::from_node(Node()); });
+						Child const generate =
+							node.with_sub_node("generate",
+								[&] (Node const &node) { return Child::from_node(node); },
+								[&]                    { return Child::from_node(Node()); });
+
+						return Import {
+							.fetchurl       = fetchurl,
+							.wipe           = wipe,
+							.extract        = extract,
+							.generate       = generate,
+							.sleep_duration = sleep_duration,
+							.heartbeat_ms   = import_heartbeat_ms
+						};
+					},
+					[&] { return Import { }; });
 
 			return Config {
 				.status_update_interval = status_update_interval,
@@ -441,14 +447,7 @@ namespace Genodians {
 					.lighttpd     = lighttpd,
 					.heartbeat_ms = lighttpd_heartbeat_ms
 				},
-				.import_config   = Import {
-					.fetchurl       = fetchurl,
-					.wipe           = wipe,
-					.extract        = extract,
-					.generate       = generate,
-					.sleep_duration = sleep_duration,
-					.heartbeat_ms   = import_heartbeat_ms
-				}
+				.import_config   = import_config
 			};
 		}
 	};
@@ -471,25 +470,25 @@ struct Genodians::Fetch : Genodians::Managed_child
 	 ** Managed_child interface **
 	 *****************************/
 
-	void generate(Xml_generator &xml) const override
+	void generate(Generator &g) const override
 	{
-		xml.node("start", [&] {
-			gen_start_node_content(xml);
+		g.node("start", [&] {
+			gen_start_node_content(g);
 
-			xml.node("heartbeat", [&] { });
+			g.node("heartbeat", [&] { });
 
-			xml.node("route", [&] {
-				gen_service_node<Rom_session>(xml, [&] {
-					xml.attribute("label", "config");
-					xml.node("parent", [&] {
-						xml.attribute("label", "fetchurl.config"); }); });
-				gen_service_node<Nic::Session>(xml, [&] {
-					xml.node("parent", [&] { }); });
-				gen_service_node<File_system::Session>(xml, [&] {
-					xml.node("parent", [&] { }); });
-				gen_service_node<Timer::Session>(xml, [&] {
-					xml.node("parent", [&] { }); });
-				gen_common_parent_routes(xml);
+			g.node("route", [&] {
+				gen_service_node<Rom_session>(g, [&] {
+					g.attribute("label", "config");
+					g.node("parent", [&] {
+						g.attribute("label", "fetchurl.config"); }); });
+				gen_service_node<Nic::Session>(g, [&] {
+					g.node("parent", [&] { }); });
+				gen_service_node<File_system::Session>(g, [&] {
+					g.node("parent", [&] { }); });
+				gen_service_node<Timer::Session>(g, [&] {
+					g.node("parent", [&] { }); });
+				gen_common_parent_routes(g);
 			});
 		});
 	}
@@ -510,24 +509,24 @@ struct Genodians::Wipe : Genodians::Managed_child
 	 ** Managed_child interface **
 	 *****************************/
 
-	void generate(Xml_generator &xml) const override
+	void generate(Generator &g) const override
 	{
-		xml.node("start", [&] {
-			gen_start_node_content(xml);
-			gen_named_node(xml, "binary", "init");
+		g.node("start", [&] {
+			gen_start_node_content(g);
+			gen_named_node(g, "binary", "init");
 
-			xml.node("heartbeat", [&] { });
+			g.node("heartbeat", [&] { });
 
-			xml.node("route", [&] {
-				gen_service_node<Rom_session>(xml, [&] {
-					xml.attribute("label", "config");
-					xml.node("parent", [&] {
-						xml.attribute("label", "wipe.config"); }); });
-				gen_service_node<File_system::Session>(xml, [&] {
-					xml.node("parent", [&] { }); });
-				gen_service_node<Timer::Session>(xml, [&] {
-					xml.node("parent", [&] { }); });
-				gen_common_parent_routes(xml);
+			g.node("route", [&] {
+				gen_service_node<Rom_session>(g, [&] {
+					g.attribute("label", "config");
+					g.node("parent", [&] {
+						g.attribute("label", "wipe.config"); }); });
+				gen_service_node<File_system::Session>(g, [&] {
+					g.node("parent", [&] { }); });
+				gen_service_node<Timer::Session>(g, [&] {
+					g.node("parent", [&] { }); });
+				gen_common_parent_routes(g);
 			});
 		});
 	}
@@ -548,21 +547,21 @@ struct Genodians::Extract : Genodians::Managed_child
 	 ** Managed_child interface **
 	 *****************************/
 
-	void generate(Xml_generator &xml) const override
+	void generate(Generator &g) const override
 	{
-		xml.node("start", [&] {
-			gen_start_node_content(xml);
+		g.node("start", [&] {
+			gen_start_node_content(g);
 
-			xml.node("heartbeat", [&] { });
+			g.node("heartbeat", [&] { });
 
-			xml.node("route", [&] {
-				gen_service_node<File_system::Session>(xml, [&] {
-					xml.node("parent", [&] { }); });
-				gen_service_node<Rom_session>(xml, [&] {
-					xml.attribute("label", "config");
-					xml.node("parent", [&] {
-						xml.attribute("label", "extract.config"); }); });
-				gen_common_parent_routes(xml);
+			g.node("route", [&] {
+				gen_service_node<File_system::Session>(g, [&] {
+					g.node("parent", [&] { }); });
+				gen_service_node<Rom_session>(g, [&] {
+					g.attribute("label", "config");
+					g.node("parent", [&] {
+						g.attribute("label", "extract.config"); }); });
+				gen_common_parent_routes(g);
 			});
 		});
 	}
@@ -583,26 +582,26 @@ struct Genodians::Generate : Genodians::Managed_child
 	 ** Managed_child interface **
 	 *****************************/
 
-	void generate(Xml_generator &xml) const override
+	void generate(Generator &g) const override
 	{
-		xml.node("start", [&] {
-			gen_start_node_content(xml);
+		g.node("start", [&] {
+			gen_start_node_content(g);
 
-			gen_named_node(xml, "binary", "init");
-			xml.node("heartbeat", [&] { });
+			gen_named_node(g, "binary", "init");
+			g.node("heartbeat", [&] { });
 
-			xml.node("route", [&] {
-				gen_service_node<Rom_session>(xml, [&] {
-					xml.attribute("label", "config");
-					xml.node("parent", [&] {
-						xml.attribute("label", "generate.config"); }); });
-				gen_service_node<File_system::Session>(xml, [&] {
-					xml.node("parent", [&] { }); });
-				gen_service_node<Timer::Session>(xml, [&] {
-					xml.node("parent", [&] { }); });
-				gen_service_node<Rtc::Session>(xml, [&] {
-					xml.node("parent", [&] { }); });
-				gen_common_parent_routes(xml);
+			g.node("route", [&] {
+				gen_service_node<Rom_session>(g, [&] {
+					g.attribute("label", "config");
+					g.node("parent", [&] {
+						g.attribute("label", "generate.config"); }); });
+				gen_service_node<File_system::Session>(g, [&] {
+					g.node("parent", [&] { }); });
+				gen_service_node<Timer::Session>(g, [&] {
+					g.node("parent", [&] { }); });
+				gen_service_node<Rtc::Session>(g, [&] {
+					g.node("parent", [&] { }); });
+				gen_common_parent_routes(g);
 			});
 		});
 	}
@@ -655,7 +654,7 @@ struct Genodians::Import : Genodians::Managed_init
 		_step_timeout_triggered = true;
 		warning("timeout triggered for step ", (unsigned)_state);
 
-		with_cached_state_report([&] (Xml_node const &node) {
+		with_cached_state_report([&] (Node const &node) {
 			state_update(node, false); }, [&] { });
 	}
 
@@ -672,11 +671,11 @@ struct Genodians::Import : Genodians::Managed_init
 	{
 		_sleep_timeout_triggered = true;
 
-		with_cached_state_report([&] (Xml_node const &node) {
+		with_cached_state_report([&] (Node const &node) {
 			state_update(node, false); }, [&] { });
 	}
 
-	void _update_init_config(Xml_generator &xml);
+	void _update_init_config(Generator &g);
 
 	Config::Import const &_config;
 
@@ -711,7 +710,7 @@ struct Genodians::Import : Genodians::Managed_init
 	 ****************************/
 
 	void generate_report(Xml_generator &xml)     const override;
-	void state_update   (Xml_node const &, bool)       override;
+	void state_update   (Node const &, bool)     override;
 };
 
 
@@ -742,7 +741,7 @@ void Genodians::Import::generate_report(Xml_generator &xml) const
 			});
 		}
 
-		Managed_init::with_cached_state_report([&] (Xml_node const &node) {
+		Managed_init::with_cached_state_report([&] (Node const &node) {
 
 			/* denote importing activity */
 			if (node.has_sub_node("child"))
@@ -759,8 +758,8 @@ void Genodians::Import::generate_report(Xml_generator &xml) const
 }
 
 
-void Genodians::Import::state_update(Xml_node const &state_node,
-                                     bool            reconfigure_init)
+void Genodians::Import::state_update(Node const &state_node,
+                                     bool        reconfigure_init)
 {
 	Seconds const current_secs = Seconds::from_rtc(_rtc.current_time());
 
@@ -876,8 +875,8 @@ void Genodians::Import::state_update(Xml_node const &state_node,
 
 	/* apply quota update */
 	if (reconfigure_init) {
-		Managed_init::generate_config([&] (Xml_generator &xml) {
-			_update_init_config(xml); });
+		Managed_init::generate_config([&] (Generator &g) {
+			_update_init_config(g); });
 		return;
 	}
 
@@ -955,44 +954,44 @@ void Genodians::Import::state_update(Xml_node const &state_node,
 	// TODO evaluate new_exit_value to handle different invalid states
 
 	_state = new_state;
-	Managed_init::generate_config([&] (Xml_generator &xml) {
-		_update_init_config(xml); });
+	Managed_init::generate_config([&] (Generator &g) {
+		_update_init_config(g); });
 }
 
 
-void Genodians::Import::_update_init_config(Xml_generator &xml)
+void Genodians::Import::_update_init_config(Generator &g)
 {
-	xml.attribute("verbose", "no");
+	g.attribute("verbose", "no");
 
-	xml.node("report", [&] {
-		xml.attribute("init_ram",   "yes");
-		xml.attribute("init_caps",  "yes");
-		xml.attribute("child_ram",  "yes");
-		xml.attribute("child_caps", "yes");
-		xml.attribute("delay_ms",   5000);
-		xml.attribute("buffer",     "64K");
+	g.node("report", [&] {
+		g.attribute("init_ram",   "yes");
+		g.attribute("init_caps",  "yes");
+		g.attribute("child_ram",  "yes");
+		g.attribute("child_caps", "yes");
+		g.attribute("delay_ms",   5000);
+		g.attribute("buffer",     "64K");
 	});
 
-	xml.node("parent-provides", [&] {
-		gen_parent_service<Rom_session>(xml);
-		gen_parent_service<Cpu_session>(xml);
-		gen_parent_service<Pd_session>(xml);
-		gen_parent_service<Rm_session>(xml);
-		gen_parent_service<Log_session>(xml);
-		gen_parent_service<Timer::Session>(xml);
-		gen_parent_service<Rtc::Session>(xml);
-		gen_parent_service<Nic::Session>(xml);
-		gen_parent_service<File_system::Session>(xml);
+	g.node("parent-provides", [&] {
+		gen_parent_service<Rom_session>(g);
+		gen_parent_service<Cpu_session>(g);
+		gen_parent_service<Pd_session>(g);
+		gen_parent_service<Rm_session>(g);
+		gen_parent_service<Log_session>(g);
+		gen_parent_service<Timer::Session>(g);
+		gen_parent_service<Rtc::Session>(g);
+		gen_parent_service<Nic::Session>(g);
+		gen_parent_service<File_system::Session>(g);
 	});
 
-	gen_heartbeat_node(xml, _config.heartbeat_ms);
+	gen_heartbeat_node(g, _config.heartbeat_ms);
 
-	gen_default_route_parent(xml);
+	gen_default_route_parent(g);
 
-	if (_fetch.constructed())    _fetch->   generate(xml);
-	if (_wipe.constructed())     _wipe->    generate(xml);
-	if (_extract.constructed())  _extract-> generate(xml);
-	if (_generate.constructed()) _generate->generate(xml);
+	if (_fetch.constructed())    _fetch->   generate(g);
+	if (_wipe.constructed())     _wipe->    generate(g);
+	if (_extract.constructed())  _extract-> generate(g);
+	if (_generate.constructed()) _generate->generate(g);
 }
 
 
@@ -1002,7 +1001,7 @@ struct Genodians::Lighttpd : Genodians::Managed_init
 
 	Rtc::Connection &_rtc;
 
-	void _update_init_config(Xml_generator &);
+	void _update_init_config(Generator &);
 
 	Config::Lighttpd const &_config;
 
@@ -1016,8 +1015,8 @@ struct Genodians::Lighttpd : Genodians::Managed_init
 		_restarts++;
 		_last_restart = from_rtc(_rtc.current_time());
 
-		Managed_init::generate_config([&] (Xml_generator &xml) {
-			_update_init_config(xml); });
+		Managed_init::generate_config([&] (Generator &g) {
+			_update_init_config(g); });
 	}
 
 	Lighttpd(Env                    &env,
@@ -1036,8 +1035,8 @@ struct Genodians::Lighttpd : Genodians::Managed_init
 		                                _config.lighttpd.caps }
 	{
 		/* initial init configuration */
-		Managed_init::generate_config([&] (Xml_generator &xml) {
-			_update_init_config(xml); });
+		Managed_init::generate_config([&] (Generator &g) {
+			_update_init_config(g); });
 	}
 
 	void trigger_restart()
@@ -1051,7 +1050,7 @@ struct Genodians::Lighttpd : Genodians::Managed_init
 	 ****************************/
 
 	void generate_report(Xml_generator &xml)      const override;
-	void state_update   (Xml_node const &, bool )       override;
+	void state_update   (Node const &, bool )     override;
 };
 
 
@@ -1067,7 +1066,7 @@ void Genodians::Lighttpd::generate_report(Xml_generator &xml) const
 			Html::gen_table_key_value_row(xml, Html::String("Last restart"),
 			                                   _last_restart);
 		});
-		Managed_init::with_cached_state_report([&] (Xml_node const &node) {
+		Managed_init::with_cached_state_report([&] (Node const &node) {
 			xml.node("h4", [&] { xml.append("init-state-report"); });
 			xml.node("pre", [&] {
 				xml.attribute("lang", "xml");
@@ -1077,8 +1076,8 @@ void Genodians::Lighttpd::generate_report(Xml_generator &xml) const
 }
 
 
-void Genodians::Lighttpd::state_update(Xml_node const &state_node,
-                                       bool            reconfigure_init)
+void Genodians::Lighttpd::state_update(Node const &state_node,
+                                       bool        reconfigure_init)
 {
 	Child_exit_state const exit_state(state_node, "lighttpd");
 
@@ -1091,100 +1090,100 @@ void Genodians::Lighttpd::state_update(Xml_node const &state_node,
 }
 
 
-void Genodians::Lighttpd::_update_init_config(Xml_generator &xml)
+void Genodians::Lighttpd::_update_init_config(Generator &g)
 {
-	xml.attribute("verbose", "no");
+	g.attribute("verbose", "no");
 
-	xml.node("report", [&] {
-		xml.attribute("init_ram",   "yes");
-		xml.attribute("init_caps",  "yes");
-		xml.attribute("child_ram",  "yes");
-		xml.attribute("child_caps", "yes");
-		xml.attribute("delay_ms",   5000);
-		xml.attribute("buffer",     "64K");
+	g.node("report", [&] {
+		g.attribute("init_ram",   "yes");
+		g.attribute("init_caps",  "yes");
+		g.attribute("child_ram",  "yes");
+		g.attribute("child_caps", "yes");
+		g.attribute("delay_ms",   5000);
+		g.attribute("buffer",     "64K");
 	});
 
-	xml.node("parent-provides", [&] {
-		gen_parent_service<Rom_session>(xml);
-		gen_parent_service<Cpu_session>(xml);
-		gen_parent_service<Pd_session>(xml);
-		gen_parent_service<Rm_session>(xml);
-		gen_parent_service<Log_session>(xml);
-		gen_parent_service<Timer::Session>(xml);
-		gen_parent_service<Rtc::Session>(xml);
-		gen_parent_service<Nic::Session>(xml);
-		gen_parent_service<File_system::Session>(xml);
+	g.node("parent-provides", [&] {
+		gen_parent_service<Rom_session>(g);
+		gen_parent_service<Cpu_session>(g);
+		gen_parent_service<Pd_session>(g);
+		gen_parent_service<Rm_session>(g);
+		gen_parent_service<Log_session>(g);
+		gen_parent_service<Timer::Session>(g);
+		gen_parent_service<Rtc::Session>(g);
+		gen_parent_service<Nic::Session>(g);
+		gen_parent_service<File_system::Session>(g);
 	});
 
-	gen_heartbeat_node(xml, _config.heartbeat_ms);
+	gen_heartbeat_node(g, _config.heartbeat_ms);
 
-	xml.node("start", [&] {
-		_child_state.gen_start_node_content(xml);
+	g.node("start", [&] {
+		_child_state.gen_start_node_content(g);
 
-		xml.node("heartbeat", [&] { });
+		g.node("heartbeat", [&] { });
 
-		xml.node("config", [&] {
-			xml.attribute("ld_verbose", "yes");
+		g.node("config", [&] {
+			g.attribute("ld_verbose", "yes");
 
-			gen_arg(xml, "lighttpd");
-			gen_arg(xml, "-f");
-			gen_arg(xml, "/etc/lighttpd/lighttpd.conf");
-			gen_arg(xml, "-D");
+			gen_arg(g, "lighttpd");
+			gen_arg(g, "-f");
+			gen_arg(g, "/etc/lighttpd/lighttpd.conf");
+			gen_arg(g, "-D");
 
-			xml.node("vfs", [&] {
+			g.node("vfs", [&] {
 
-				gen_named_dir(xml, "dev", [&] (Xml_generator &xml) {
-					xml.node("log",  [&] { });
-					xml.node("null", [&] { });
-					xml.node("rtc",  [&] { });
-					xml.node("jitterentropy", [&] { xml.attribute("name", "random"); }); });
+				gen_named_dir(g, "dev", [&] (Generator &g) {
+					g.node("log",  [&] { });
+					g.node("null", [&] { });
+					g.node("rtc",  [&] { });
+					g.node("jitterentropy", [&] { g.attribute("name", "random"); }); });
 
-				gen_named_dir(xml, "socket", [&] (Xml_generator &xml) {
-					xml.node("lxip", [&] { xml.attribute("dhcp", "yes"); }); });
+				gen_named_dir(g, "socket", [&] (Generator &g) {
+					g.node("lxip", [&] { g.attribute("dhcp", "yes"); }); });
 
-				gen_named_dir(xml, "etc", [&] (Xml_generator &xml) {
-					gen_named_dir(xml, "lighttpd", [&] (Xml_generator &xml) {
-						gen_rom(xml, "lighttpd.conf");
-						gen_rom(xml, "upload-user.conf");
-						xml.node("fs", [&] { xml.attribute("label", "cert"); }); }); });
+				gen_named_dir(g, "etc", [&] (Generator &g) {
+					gen_named_dir(g, "lighttpd", [&] (Generator &g) {
+						gen_rom(g, "lighttpd.conf");
+						gen_rom(g, "upload-user.conf");
+						g.node("fs", [&] { g.attribute("label", "cert"); }); }); });
 
-				gen_named_dir(xml, "website", [&] (Xml_generator &xml) {
-					gen_named_dir(xml, ".well-known", [&] (Xml_generator &xml) {
-						gen_symlink(xml, "acme-challenge", "/upload/acme-challenge"); });
-					gen_symlink(xml, "upload", "/upload");
-					xml.node("fs", [&] { xml.attribute("label", "website"); }); });
+				gen_named_dir(g, "website", [&] (Generator &g) {
+					gen_named_dir(g, ".well-known", [&] (Generator &g) {
+						gen_symlink(g, "acme-challenge", "/upload/acme-challenge"); });
+					gen_symlink(g, "upload", "/upload");
+					g.node("fs", [&] { g.attribute("label", "website"); }); });
 
-				gen_named_dir(xml, "upload", [&] (Xml_generator &xml) {
-					gen_symlink(xml, "cert", "/etc/lighttpd/public");
-					gen_named_dir(xml, "acme-challenge", [] (Xml_generator &xml) {
-						xml.node("ram"); }); });
+				gen_named_dir(g, "upload", [&] (Generator &g) {
+					gen_symlink(g, "cert", "/etc/lighttpd/public");
+					gen_named_dir(g, "acme-challenge", [] (Generator &g) {
+						g.node("ram"); }); });
 
 			});
 
-			xml.node("libc", [&] {
-				xml.attribute("stdin",  "/dev/null");
-				xml.attribute("stdout", "/dev/log");
-				xml.attribute("stderr", "/dev/log");
-				xml.attribute("rtc",    "/dev/rtc");
-				xml.attribute("socket", "/socket"); }); });
+			g.node("libc", [&] {
+				g.attribute("stdin",  "/dev/null");
+				g.attribute("stdout", "/dev/log");
+				g.attribute("stderr", "/dev/log");
+				g.attribute("rtc",    "/dev/rtc");
+				g.attribute("socket", "/socket"); }); });
 
-		xml.node("route", [&] {
-			gen_service_node<File_system::Session>(xml, [&] {
-				xml.attribute("label", "cert");
-				xml.node("parent", [&] {
-					xml.attribute("label", "cert"); }); });
-			gen_service_node<File_system::Session>(xml, [&] {
-				xml.attribute("label", "website");
-				xml.node("parent", [&] {
-					xml.attribute("label", "website"); }); });
-			gen_service_node<Nic::Session>(xml, [&] {
-				xml.node("parent", [&] { }); });
-			gen_parent_route<Cpu_session>   (xml);
-			gen_parent_route<Log_session>   (xml);
-			gen_parent_route<Pd_session>    (xml);
-			gen_parent_route<Rom_session>   (xml);
-			gen_parent_route<Rtc::Session>  (xml);
-			gen_parent_route<Timer::Session>(xml);
+		g.node("route", [&] {
+			gen_service_node<File_system::Session>(g, [&] {
+				g.attribute("label", "cert");
+				g.node("parent", [&] {
+					g.attribute("label", "cert"); }); });
+			gen_service_node<File_system::Session>(g, [&] {
+				g.attribute("label", "website");
+				g.node("parent", [&] {
+					g.attribute("label", "website"); }); });
+			gen_service_node<Nic::Session>(g, [&] {
+				g.node("parent", [&] { }); });
+			gen_parent_route<Cpu_session>   (g);
+			gen_parent_route<Log_session>   (g);
+			gen_parent_route<Pd_session>    (g);
+			gen_parent_route<Rom_session>   (g);
+			gen_parent_route<Rtc::Session>  (g);
+			gen_parent_route<Timer::Session>(g);
 		});
 	});
 }
@@ -1204,7 +1203,7 @@ struct Genodians::Main
 	Config _update_from_config_rom()
 	{
 		_config_rom.update();
-		return Config::update_from_xml(_config_rom.xml());
+		return Config::update_from_node(_config_rom.node());
 	}
 
 	Config _config;
@@ -1274,13 +1273,13 @@ struct Genodians::Main
 			_handle();
 		}
 
-		void with_xml(auto const &fn) {
-			if (_rom.valid()) fn(_rom.xml()); }
+		void with_node(auto const &fn) {
+			if (_rom.valid()) fn(_rom.node()); }
 	};
 
 	State_rom_handler _nic_router_state_rom;
 
-	void _generate_nic_router_report(Xml_generator &xml, Xml_node const &node)
+	void _generate_nic_router_report(Xml_generator &xml, Node const &node)
 	{
 		auto td_centered = [&] (Xml_generator &xml, auto value) {
 			xml.node("td", [&] {
@@ -1291,7 +1290,7 @@ struct Genodians::Main
 		auto td_right = [&] (Xml_generator &xml, auto value) {
 			xml.node("td", [&] {
 				xml.attribute("style", "text-align:right");
-				xml.append_content(value); });
+				xml.append_sanitized(String<48>{value}); });
 		};
 
 		xml.node("table", [&] {
@@ -1303,10 +1302,10 @@ struct Genodians::Main
 				}); });
 
 			xml.node("tbody", [&] {
-				node.for_each_sub_node("domain", [&] (Xml_node const &domain) {
+				node.for_each_sub_node("domain", [&] (Node const &domain) {
 					xml.node("tr", [&] {
 						xml.node("td", [&] {
-							xml.append_content(domain.attribute_value("name", Html::String())); });
+							xml.append_sanitized(domain.attribute_value("name", Html::String())); });
 						td_right(xml, domain.attribute_value("rx_bytes", 0ull));
 						td_right(xml, domain.attribute_value("tx_bytes", 0ull));
 					}); }); });
@@ -1326,7 +1325,7 @@ struct Genodians::Main
 				Html::gen_table_key_value_row(xml,
 					Html::String("Uptime"), Html::String(_uptime));
 
-				_nic_router_state_rom.with_xml([&] (Xml_node const &node) {
+				_nic_router_state_rom.with_node([&] (Node const &node) {
 					_generate_nic_router_report(xml, node);
 				});
 			});
@@ -1339,7 +1338,7 @@ struct Genodians::Main
 
 		_uptime = { _timer.curr_time().trunc_to_plain_ms().value / 1'000u };
 
-		_status_reporter.generate([&] (Xml_generator &xml) {
+		_status_reporter.generate_xml([&] (Xml_generator &xml) {
 
 			xml.node("head", [&] {
 				xml.node("meta", [&] {
@@ -1383,7 +1382,7 @@ struct Genodians::Main
 
 	Rom_handler<Main> _fetch_lighttpd_handler;
 
-	void _handle_fetch_lighttpd(Xml_node const &node)
+	void _handle_fetch_lighttpd(Node const &node)
 	{
 		static constexpr unsigned MAX_CHECKS = 3;
 		static unsigned check_count = 0;
@@ -1394,7 +1393,7 @@ struct Genodians::Main
 			return;
 		}
 
-		auto check_progress = [&] (Xml_node const &fetch_node) {
+		auto check_progress = [&] (Node const &fetch_node) {
 			/* ignore transient reports */
 			if (!fetch_node.attribute_value("finished", false))
 				return;
@@ -1414,7 +1413,7 @@ struct Genodians::Main
 			if (check_count) {
 				log("Lighttpd check already failed ", check_count, " times");
 
-				_nic_router_state_rom.with_xml([&] (Xml_node const &node) {
+				_nic_router_state_rom.with_node([&] (Node const &node) {
 					log(node);
 				});
 			}

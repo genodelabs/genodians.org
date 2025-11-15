@@ -49,8 +49,7 @@ define FETCHURL_CONFIG_HEAD
 			<dir name="pipe"> <pipe/> </dir>
 			<dir name="download"> <fs label="download"/> </dir>
 		</vfs>
-		<libc stdout="/dev/log" stderr="/dev/log" rtc="/dev/rtc" socket="/socket"
-		      pipe="/pipe"/>
+		<libc stdout="/dev/log" stderr="/dev/log" rtc="/dev/rtc" socket="/socket" pipe="/pipe"/>
 endef
 
 define FETCHURL_CONFIG_TAIL
@@ -72,8 +71,7 @@ extract.config:
 
 define EXTRACT_CONFIG_HEAD
 	<config verbose="yes" ignore_failures="yes" stop_on_failure="no">
-		<libc stdout="/dev/log" stderr="/dev/log" rtc="/dev/null"
-		      update_mtime="no"/>
+		<libc stdout="/dev/log" stderr="/dev/log" rtc="/dev/null" update_mtime="no"/>
 		<vfs>
 			<dir name="download"> <fs label="download"/> </dir>
 			<dir name="content"> <fs label="content" writeable="yes"/> </dir>
