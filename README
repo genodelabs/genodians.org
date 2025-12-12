@@ -111,7 +111,7 @@ works) before publishing it.
 Adding your content to genodians.org
 ------------------------------------
 
-Please open an issue at [https://github.com/genodelabs/genodians.org] and
+Please open an issue at [https://codeberg.org/genodelabs/genodians.org] and
 provide the following information:
 
 * A link to your content (i.e., a GitHub project). The content should already
@@ -142,7 +142,7 @@ steps:
 
 # Clone the genodians.org repository
 
-  ! git clone https://github.com/genodelabs/genodians.org.git
+  ! git clone https://codeberg.org/genodelabs/genodians.org.git
   ! cd genodians.org
 
 # Fetch the required sub module(s)
