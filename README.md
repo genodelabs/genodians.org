@@ -8,7 +8,7 @@ the default branch from "master" to "main". The instructions below
 also demonstrate how to create a local "main" branch in your cloned repository.
 
 ```
-genodians.org$ git set-url origin https://codeberg.org/genodelabs/genodians.org.git
+genodians.org$ git remote set-url origin https://codeberg.org/genodelabs/genodians.org.git
 genodians.org$ git fetch origin
 genodians.org$ git checkout origin/main
 genodians.org$ git switch -c main
